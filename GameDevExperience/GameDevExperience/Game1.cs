@@ -28,6 +28,7 @@ namespace GameDevExperience
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            FontText.AddFont("PublicPixel", Content.Load<SpriteFont>("PublicPixel"));
         }
 
         protected override void Update(GameTime gameTime)

@@ -32,6 +32,15 @@ namespace GameDevExperience
 
         public void Update(GameTime gameTime)
         {
+            previousMouseState = currentMouseState;
+            currentMouseState = Mouse.GetState();
+
+            previousGamePadState = currentGamePadState;
+            currentGamePadState = GamePad.GetState(0);
+
+            previousKeyboardState = currentKeyboardState;
+            currentKeyboardState = Keyboard.GetState();
+
             Escape = currentGamePadState.Buttons.Back == ButtonState.Pressed && previousGamePadState.Buttons.Back == ButtonState.Released
                 || currentKeyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape);
 

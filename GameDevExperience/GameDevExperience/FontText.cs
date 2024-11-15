@@ -13,7 +13,7 @@ namespace GameDevExperience
             Fonts.Add(fontName, font);
         }
 
-        public static Vector2 SizeOf(string fontName, string text)
+        public static Vector2 SizeOf(string text, string fontName)
         {
             return Fonts[fontName].MeasureString(text);
         }

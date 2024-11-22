@@ -2,10 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Reflection.Metadata;
 using System.IO;
 using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
+
 
 namespace GameDevExperience.Screens
 {
@@ -22,14 +25,16 @@ namespace GameDevExperience.Screens
         private bool drawTest;
         private double drawTime;
 
-        
-
+        private Texture2D test2;
+        private Color test2Color;
+        private KeyboardState keyboardtest;
+        private KeyboardState prevkeyboardtest;
         public BinaryBeats()
         {
             drawTest = false;
             drawTime = 0.0;
         }
-
+        InputManager test2Manager;
         public override void Activate()
         {
             if (_content == null) _content = new ContentManager(ScreenManager.Game.Services, "Content");
@@ -38,9 +43,9 @@ namespace GameDevExperience.Screens
             _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText("test.json"));
             _secondsPerBeat = 60.0 / _beatMap.Bpm;
             _song = _content.Load<Song>("a-video-game");
-
+            test2 = _content.Load<Texture2D>("test2");
             MediaPlayer.Play(_song);
-
+            test2Color = Color.White;
             base.Activate();
         }
 
@@ -48,6 +53,7 @@ namespace GameDevExperience.Screens
         {
             if (IsActive)
             {
+                keyboardtest =Keyboard.GetState();
                 double SongTime = MediaPlayer.PlayPosition.TotalSeconds;
                 foreach (var action in _beatMap.Actions)
                 {
@@ -57,7 +63,32 @@ namespace GameDevExperience.Screens
                         TriggerAction(action.ActionId);
                     }
                 }
-
+                if (keyboardtest.IsKeyDown(Keys.A))
+                {
+                    if (drawTest)
+                    {
+                        test2Color = Color.Green;
+                    }
+                    else
+                    {
+                        test2Color = Color.Red;
+                    }
+                }
+                else if (keyboardtest.IsKeyDown(Keys.B))
+                {
+                    if (drawTest)
+                    {
+                        test2Color = Color.Blue; 
+                    }
+                    else
+                    {
+                        test2Color = Color.Red; 
+                    }
+                }
+                else if (!keyboardtest.IsKeyDown(Keys.A) && !keyboardtest.IsKeyDown(Keys.B))
+                {
+                    test2Color = Color.White;
+                }
                 if (drawTest)
                 {
                     drawTime -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -71,31 +102,26 @@ namespace GameDevExperience.Screens
                 {
                     MediaPlayer.Play(_song);
                 }
+                prevkeyboardtest = keyboardtest;
             }
         }
 
         public override void HandleInput(GameTime gameTime, InputManager input)
         {
+            test2Manager = input;
             if (input.Escape)
             {
                 ScreenManager.AddScreen(new MainMenu());
                 ScreenManager.RemoveScreen(this);
             }
-            if (input.A)
-            {
-
-            }
-            if (input.B)
-            {
-
-            }
+           
         }
 
         /// <summary>
         /// would be changes or edited or made public to trigger what ever thingy we need to do
         /// </summary>
         /// <param name="actionId"></param>
-        private void TriggerAction(int actionId)
+        public void TriggerAction(int actionId)
         {
             drawTest = true;
             drawTime = _secondsPerBeat;
@@ -109,8 +135,9 @@ namespace GameDevExperience.Screens
             spriteBatch.Begin();
             if (drawTest)
             {
-                spriteBatch.Draw(test, new Vector2(100, 100), Color.White);
+                spriteBatch.Draw(test, new Rectangle(0, 0, 960, 540), Color.White);
             }
+            spriteBatch.Draw(test2, new Rectangle(0, 0, 960 /2, 540 / 2), test2Color);
             spriteBatch.End();
         }
     }

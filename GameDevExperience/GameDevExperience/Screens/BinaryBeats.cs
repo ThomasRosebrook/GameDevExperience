@@ -26,7 +26,18 @@ namespace GameDevExperience.Screens
         bool drawtest;
         double drawtime;
 
+        double total = 0;
+        double score = 0;
+        double count = 0;
+
+        //Due to mirroring, these values should be half the total amount of time for each zone
+        double greenZoneSize = 0.25;
+        double yellowZoneSize = 0.125;
+
+        //double timeDelay;
+
         int frame = 0;
+
         public BinaryBeats()
         {
             hitBoxColor = Color.White;
@@ -45,6 +56,8 @@ namespace GameDevExperience.Screens
             hitBoxTexture = _content.Load<Texture2D>("test2");
             MediaPlayer.Play(_song);
             songTime = 0;
+            score = 0;
+            total = _beatMap.Actions.Count;
             base.Activate();
         }
 
@@ -59,10 +72,11 @@ namespace GameDevExperience.Screens
                 // Check for actions in the beatmap
                 foreach (var action in _beatMap.Actions)
                 {
-                    actionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat - 1) * _secondsPerBeat;
-                    NoteHit = songTime + _secondsPerBeat * 2;
-                    if (Math.Abs(songTime - actionTime) <= 0.005)
+                    double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat - 1) * _secondsPerBeat;
+                    if (Math.Abs(songTime - currActionTime) <= 0.005)
                     {
+                        actionTime = currActionTime;
+                        count++;
                         TriggerAction();
                         break;
                     }
@@ -104,16 +118,24 @@ namespace GameDevExperience.Screens
                 ScreenManager.RemoveScreen(this);
             }
             
-            if (input.A || input.B)
+            if (hitWindowActive && (input.A || input.B))
             {
-                if (Math.Abs(NoteHit) <= _secondsPerBeat / 3)
+                double timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * 2);
+                if (timeDelay <= greenZoneSize) 
+                {
                     hitBoxColor = Color.Green;
-                else if (Math.Abs(NoteHit) <= _secondsPerBeat / 2)
+                    score += 1;
+                }
+                else if (timeDelay > greenZoneSize && timeDelay <= greenZoneSize + yellowZoneSize)
+                {
                     hitBoxColor = Color.Yellow;
-                else if (Math.Abs(NoteHit) <= _secondsPerBeat)
-                    hitBoxColor = Color.Orange;
+                    score += .5;
+                }   
                 else
+                {
                     hitBoxColor = Color.Red;
+                }
+                hitWindowActive = false;
             }
             else
             {
@@ -146,6 +168,8 @@ namespace GameDevExperience.Screens
             //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150,300), Color.Yellow, $"Frames: {frame}");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 350), Color.Yellow, $"ActionTime: {actionTime}");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 400), Color.Yellow, $"SongTime: {songTime}");
+
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 450), Color.Yellow, $"Accuracy: {total / ((total - count) + score) * 100}%");
 
             spriteBatch.End();
         }

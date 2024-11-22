@@ -1,0 +1,25 @@
+{
+  "bpm": 120,
+  "actions": [
+    {
+      "measure": 1,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 2,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 3,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 8,
+      "beat": 2,
+      "actionId": 1
+    }
+  ]
+}

@@ -24,6 +24,7 @@ namespace GameDevExperience.Screens
         private double NoteHit;
         private double actionTime;
         private double songTime;
+        private Texture2D background;
         bool drawtest;
         double drawtime;
         SoundEffect correct;
@@ -60,6 +61,7 @@ namespace GameDevExperience.Screens
             wrong = _content.Load<SoundEffect>("wrong");
             indicator = _content.Load<SoundEffect>("indicator");
             hitBoxTexture = _content.Load<Texture2D>("test2");
+            background = _content.Load<Texture2D>("Programming");
             MediaPlayer.Play(_song);
             songTime = 0;
             score = 0;
@@ -145,7 +147,7 @@ namespace GameDevExperience.Screens
                     hitBoxColor = Color.Red;
                     wrong.Play();
                 }
-                //hitWindowActive = false;
+                hitWindowActive = false;
             }
             else
             {
@@ -169,6 +171,8 @@ namespace GameDevExperience.Screens
 
             var spriteBatch = ScreenManager.SpriteBatch;
             spriteBatch.Begin();
+
+            spriteBatch.Draw(background, new Vector2(0,0), Color.White);
 
             if (drawtest)
             {

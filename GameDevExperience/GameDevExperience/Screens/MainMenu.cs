@@ -1,19 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.IO;
 namespace GameDevExperience.Screens
 {
     public class MainMenu : GameScreen
     {
-
-
         private ContentManager _content;
 
         private int width;
@@ -51,11 +42,14 @@ namespace GameDevExperience.Screens
 
         public override void HandleInput(GameTime gameTime, InputManager input)
         {
-            base.HandleInput(gameTime, input);
-
             if (input.Escape)
             {
                 ScreenManager.Game.Exit();
+            }
+            if (input.A)
+            {
+                ScreenManager.AddScreen(new BinaryBeats());
+                ScreenManager.RemoveScreen(this);
             }
         }
 
@@ -70,6 +64,10 @@ namespace GameDevExperience.Screens
             string currentText = "The Game Dev Experience";
             Vector2 size = FontText.SizeOf(currentText, "PublicPixel");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
+
+            currentText = "Press Z or A to begin";
+            size = FontText.SizeOf(currentText, "PublicPixel");
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(width / 2 - size.X / 2, (height - size.Y) / 2), Color.LimeGreen, currentText);
 
             currentText = "Exit: ESC or Back";
             size = FontText.SizeOf(currentText, "PublicPixel");

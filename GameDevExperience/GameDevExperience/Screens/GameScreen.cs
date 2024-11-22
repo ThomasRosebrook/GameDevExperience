@@ -1,19 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameDevExperience;
 
 namespace GameDevExperience.Screens
 {
     public class GameScreen
     {
-
-
-
-
         public ScreenManager ScreenManager { get; internal set; }
 
         public ScreenState ScreenState { get; set; } = ScreenState.Active;

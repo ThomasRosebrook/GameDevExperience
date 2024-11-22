@@ -9,21 +9,18 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GameDevExperience.Screens
 {
-    public class BinaryBeats : GameScreen
+    public class RhythmGameScreen : GameScreen
     {
         private ContentManager _content;
-        private Song _song;
-        private Beatmap _beatMap;
+
         private double _secondsPerBeat;
         private Texture2D test;
         private Texture2D hitBoxTexture;
         private Color hitBoxColor;
         private double delayTimer;
         private bool hitWindowActive;
-        private double NoteHit;
         private double actionTime;
         private double songTime;
-        private Texture2D background;
         bool drawtest;
         double drawtime;
         SoundEffect correct;
@@ -33,18 +30,18 @@ namespace GameDevExperience.Screens
         double score = 0;
         double count = 0;
 
-        int backgroundFrame = 0;
-        Timer BackgroundTimer;
+        protected Song _song;
+        protected Texture2D _background;
+        protected Beatmap _beatMap;
+        protected Color _backgroundColor = Color.CornflowerBlue;
+
+        protected int beatDelay = 2;
 
         //Due to mirroring, these values should be half the total amount of time for each zone
-        double greenZoneSize = 0.25;
-        double yellowZoneSize = 0.125;
+        protected double greenZoneSize = 0.25;
+        protected double yellowZoneSize = 0.125;
 
-        //double timeDelay;
-
-        int frame = 0;
-
-        public BinaryBeats()
+        public RhythmGameScreen()
         {
             hitBoxColor = Color.White;
             drawtest = false;
@@ -56,20 +53,18 @@ namespace GameDevExperience.Screens
             if (_content == null) _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             test = _content.Load<Texture2D>("test");
-            _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText("test.json"));
-            _secondsPerBeat = 60.0 / _beatMap.Bpm;
-            _song = _content.Load<Song>("a-video-game");
             correct = _content.Load<SoundEffect>("correct");
             wrong = _content.Load<SoundEffect>("wrong");
+
             indicator = _content.Load<SoundEffect>("indicator");
             hitBoxTexture = _content.Load<Texture2D>("test2");
-            background = _content.Load<Texture2D>("Programming");
-            MediaPlayer.Play(_song);
-            BackgroundTimer = new Timer(TimerUnit.Milliseconds, 0.5f);
+            _background = _content.Load<Texture2D>("Programming");
+
+            //MediaPlayer.Play(_song);
 
             songTime = 0;
             score = 0;
-            total = _beatMap.Actions.Count;
+            //total = _beatMap.Actions.Count;
             base.Activate();
         }
 
@@ -78,7 +73,6 @@ namespace GameDevExperience.Screens
             if (IsActive)
             {
                 songTime += gameTime.ElapsedGameTime.TotalSeconds;
-                frame++;
                 //songTime = MediaPlayer.PlayPosition.TotalSeconds;
 
                 // Check for actions in the beatmap
@@ -109,13 +103,10 @@ namespace GameDevExperience.Screens
                     {
                         drawtest = false;
                         hitWindowActive = true;
-                        delayTimer = _secondsPerBeat * 2;
+                        delayTimer = _secondsPerBeat * beatDelay;
                         indicator.Play();
                     }
                 }
-
-                BackgroundTimer.Update(gameTime);
-
 
 
                 if (MediaPlayer.State != MediaState.Playing)
@@ -133,11 +124,11 @@ namespace GameDevExperience.Screens
                 ScreenManager.AddScreen(new MainMenu());
                 ScreenManager.RemoveScreen(this);
             }
-            
+
             if (hitWindowActive && (input.A || input.B))
             {
-                double timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * 2);
-                if (timeDelay <= greenZoneSize) 
+                double timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
+                if (timeDelay <= greenZoneSize)
                 {
                     hitBoxColor = Color.Green;
                     correct.Play();
@@ -148,7 +139,7 @@ namespace GameDevExperience.Screens
                     hitBoxColor = Color.Yellow;
                     correct.Play();
                     score += .5;
-                }   
+                }
                 else
                 {
                     hitBoxColor = Color.Red;
@@ -162,34 +153,34 @@ namespace GameDevExperience.Screens
             }
         }
 
+        protected void LoadBeatmap(string path)
+        {
+            _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText(path));
+            _secondsPerBeat = 60.0 / _beatMap.Bpm;
+        }
+
 
         public void TriggerAction()
         {
-            delayTimer = _secondsPerBeat * 2;
+            delayTimer = _secondsPerBeat * beatDelay;
             hitWindowActive = false;
             drawtest = true;
             drawtime = _secondsPerBeat;
             indicator.Play();
         }
 
-        private void OnBackgroundTimerUpdate(EventArgs e, object obj)
-        {
-            if (backgroundFrame == 0) backgroundFrame = 1;
-            else backgroundFrame = 0;
-        }
-
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+            ScreenManager.GraphicsDevice.Clear(_backgroundColor);
 
             var spriteBatch = ScreenManager.SpriteBatch;
             spriteBatch.Begin();
 
-            spriteBatch.Draw(background, new Vector2(0,0), new Rectangle(0, 960 * backgroundFrame, 960, 540), Color.White);
+            spriteBatch.Draw(_background, new Vector2(0, 0), Color.White);
 
             if (drawtest)
             {
-                spriteBatch.Draw(test, new Rectangle(960 / 4, 540 / 4, 960/4, 540/4), Color.White);
+                spriteBatch.Draw(test, new Rectangle(960 / 4, 540 / 4, 960 / 4, 540 / 4), Color.White);
             }
             spriteBatch.Draw(hitBoxTexture, new Rectangle(0, 0, 960 / 4, 540 / 4), hitBoxColor);
 

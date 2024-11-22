@@ -27,14 +27,13 @@ namespace GameDevExperience.Screens
 
         private Texture2D test2;
         private Color test2Color;
-        private KeyboardState keyboardtest;
-        private KeyboardState prevkeyboardtest;
+
         public BinaryBeats()
         {
             drawTest = false;
             drawTime = 0.0;
         }
-        InputManager test2Manager;
+
         public override void Activate()
         {
             if (_content == null) _content = new ContentManager(ScreenManager.Game.Services, "Content");
@@ -53,7 +52,6 @@ namespace GameDevExperience.Screens
         {
             if (IsActive)
             {
-                keyboardtest =Keyboard.GetState();
                 double SongTime = MediaPlayer.PlayPosition.TotalSeconds;
                 foreach (var action in _beatMap.Actions)
                 {
@@ -63,32 +61,7 @@ namespace GameDevExperience.Screens
                         TriggerAction(action.ActionId);
                     }
                 }
-                if (keyboardtest.IsKeyDown(Keys.A))
-                {
-                    if (drawTest)
-                    {
-                        test2Color = Color.Green;
-                    }
-                    else
-                    {
-                        test2Color = Color.Red;
-                    }
-                }
-                else if (keyboardtest.IsKeyDown(Keys.B))
-                {
-                    if (drawTest)
-                    {
-                        test2Color = Color.Blue; 
-                    }
-                    else
-                    {
-                        test2Color = Color.Red; 
-                    }
-                }
-                else if (!keyboardtest.IsKeyDown(Keys.A) && !keyboardtest.IsKeyDown(Keys.B))
-                {
-                    test2Color = Color.White;
-                }
+
                 if (drawTest)
                 {
                     drawTime -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -102,17 +75,44 @@ namespace GameDevExperience.Screens
                 {
                     MediaPlayer.Play(_song);
                 }
-                prevkeyboardtest = keyboardtest;
             }
         }
 
         public override void HandleInput(GameTime gameTime, InputManager input)
         {
-            test2Manager = input;
             if (input.Escape)
             {
                 ScreenManager.AddScreen(new MainMenu());
                 ScreenManager.RemoveScreen(this);
+            }
+
+            if (input.A)
+            {
+                if (drawTest)
+                {
+                    test2Color = Color.Green;
+                }
+                else
+                {
+                    test2Color = Color.Red;
+                }
+            }
+
+            if (input.B)
+            {
+                if (drawTest)
+                {
+                    test2Color = Color.Blue;
+                }
+                else
+                {
+                    test2Color = Color.Red;
+                }
+            }
+
+            if (!input.A && !input.B)
+            {
+                test2Color = Color.White;
             }
            
         }

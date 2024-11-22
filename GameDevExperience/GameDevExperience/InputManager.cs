@@ -19,16 +19,47 @@ namespace GameDevExperience
         MouseState currentMouseState;
         MouseState previousMouseState;
 
+        public Keys AButtonKey = Keys.A;
+        public Keys BButtonKey = Keys.B;
+
         public bool Escape { get; private set; } = false;
 
+        /// <summary>
+        /// If the A Button is currently pressed
+        /// </summary>
         public bool A { get; private set; } = false;
 
+        /// <summary>
+        /// If the B Button is currently pressed
+        /// </summary>
         public bool B { get; private set; } = false;
 
+        /// <summary>
+        /// If the A Button was just released
+        /// </summary>
+        public bool AButtonJustReleased { get; private set; } = false;
+
+        /// <summary>
+        /// If the B Button was just released
+        /// </summary>
+        public bool BButtonJustReleased { get; private set; } = false;
+
+        /// <summary>
+        /// If the A Button was just pressed
+        /// </summary>
+        public bool AButtonJustPressed { get; private set; } = false;
+
+        /// <summary>
+        /// If the B Button was just pressed
+        /// </summary>
+        public bool BButtonJustPressed { get; private set; } = false;
+
+        /*
         public bool DirectionChanged { get; private set; } = false;
         public Vector2 Direction { get; private set; }
 
         private Vector2 prevDirection = new Vector2(0, 0);
+        */
 
         public void Update(GameTime gameTime)
         {
@@ -44,12 +75,27 @@ namespace GameDevExperience
             Escape = currentGamePadState.Buttons.Back == ButtonState.Pressed && previousGamePadState.Buttons.Back == ButtonState.Released
                 || currentKeyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape);
 
-            A = currentGamePadState.Buttons.A == ButtonState.Pressed && previousGamePadState.Buttons.A == ButtonState.Released
-                || currentKeyboardState.IsKeyDown(Keys.Z) && !previousKeyboardState.IsKeyDown(Keys.Z);
 
-            B = currentGamePadState.Buttons.B == ButtonState.Pressed && previousGamePadState.Buttons.B == ButtonState.Released
-                || currentKeyboardState.IsKeyDown(Keys.X) && !previousKeyboardState.IsKeyDown(Keys.X);
+            A = currentGamePadState.Buttons.A == ButtonState.Pressed
+                || currentKeyboardState.IsKeyDown(AButtonKey);
 
+            B = currentGamePadState.Buttons.B == ButtonState.Pressed
+                || currentKeyboardState.IsKeyDown(BButtonKey);
+
+            AButtonJustPressed = currentGamePadState.Buttons.A == ButtonState.Pressed && previousGamePadState.Buttons.A == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(AButtonKey) && !previousKeyboardState.IsKeyDown(AButtonKey);
+
+            BButtonJustPressed = currentGamePadState.Buttons.B == ButtonState.Pressed && previousGamePadState.Buttons.B == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(BButtonKey) && !previousKeyboardState.IsKeyDown(BButtonKey);
+
+            AButtonJustReleased = currentGamePadState.Buttons.A == ButtonState.Released && previousGamePadState.Buttons.A == ButtonState.Pressed
+                || !currentKeyboardState.IsKeyDown(AButtonKey) && previousKeyboardState.IsKeyDown(AButtonKey);
+
+            BButtonJustReleased = currentGamePadState.Buttons.B == ButtonState.Released && previousGamePadState.Buttons.B == ButtonState.Pressed
+                || !currentKeyboardState.IsKeyDown(BButtonKey) && previousKeyboardState.IsKeyDown(BButtonKey);
+
+
+            /*
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Direction = new Vector2();
@@ -79,7 +125,7 @@ namespace GameDevExperience
             DirectionChanged = !(Direction.X == prevDirection.X && Direction.Y == prevDirection.Y);
 
             prevDirection = Direction;
-
+            */
         }
     }
 }

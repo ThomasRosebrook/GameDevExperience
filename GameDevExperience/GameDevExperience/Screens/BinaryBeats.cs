@@ -96,6 +96,38 @@ namespace GameDevExperience.Screens
                     }
                 }
                 if (drawtest)
+                }
+
+                if (MediaPlayer.State != MediaState.Playing)
+                {
+                    MediaPlayer.Play(_song);
+                }
+            }
+        }
+
+        public override void HandleInput(GameTime gameTime, InputManager input)
+        {
+            if (input.Escape)
+            {
+                ScreenManager.AddScreen(new MainMenu());
+                ScreenManager.RemoveScreen(this);
+            }
+
+            if (input.A)
+            {
+                if (drawTest)
+                {
+                    test2Color = Color.Green;
+                }
+                else
+                {
+                    test2Color = Color.Red;
+                }
+            }
+
+            if (input.B)
+            {
+                if (drawTest)
                 {
                     drawtime -= gameTime.ElapsedGameTime.TotalSeconds;
                     if (drawtime <= 0)
@@ -112,8 +144,7 @@ namespace GameDevExperience.Screens
         {
             if (input.Escape)
             {
-                ScreenManager.AddScreen(new MainMenu());
-                ScreenManager.RemoveScreen(this);
+                test2Color = Color.White;
             }
         }
 

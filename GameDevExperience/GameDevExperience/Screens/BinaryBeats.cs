@@ -25,6 +25,8 @@ namespace GameDevExperience.Screens
         private double songTime;
         bool drawtest;
         double drawtime;
+
+        int frame = 0;
         public BinaryBeats()
         {
             hitBoxColor = Color.White;
@@ -42,6 +44,7 @@ namespace GameDevExperience.Screens
             _song = _content.Load<Song>("a-video-game");
             hitBoxTexture = _content.Load<Texture2D>("test2");
             MediaPlayer.Play(_song);
+            songTime = 0;
             base.Activate();
         }
 
@@ -49,14 +52,16 @@ namespace GameDevExperience.Screens
         {
             if (IsActive)
             {
-                songTime = MediaPlayer.PlayPosition.TotalSeconds;
+                songTime += gameTime.ElapsedGameTime.TotalSeconds;
+                frame++;
+                //songTime = MediaPlayer.PlayPosition.TotalSeconds;
 
                 // Check for actions in the beatmap
                 foreach (var action in _beatMap.Actions)
                 {
                     actionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat - 1) * _secondsPerBeat;
                     NoteHit = songTime + _secondsPerBeat * 2;
-                    if (Math.Abs(songTime - actionTime) < 0.005)
+                    if (Math.Abs(songTime - actionTime) <= 0.005)
                     {
                         TriggerAction();
                         break;
@@ -86,6 +91,7 @@ namespace GameDevExperience.Screens
                 if (MediaPlayer.State != MediaState.Playing)
                 {
                     MediaPlayer.Play(_song);
+                    songTime = 0;
                 }
             }
         }
@@ -136,6 +142,10 @@ namespace GameDevExperience.Screens
                 spriteBatch.Draw(test, new Rectangle(960 / 4, 540 / 4, 960/4, 540/4), Color.White);
             }
             spriteBatch.Draw(hitBoxTexture, new Rectangle(0, 0, 960 / 4, 540 / 4), hitBoxColor);
+
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150,300), Color.Yellow, $"Frames: {frame}");
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 350), Color.Yellow, $"ActionTime: {actionTime}");
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 400), Color.Yellow, $"SongTime: {songTime}");
 
             spriteBatch.End();
         }

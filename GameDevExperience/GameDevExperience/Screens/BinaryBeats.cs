@@ -20,12 +20,11 @@ namespace GameDevExperience.Screens
         private Color hitBoxColor;
         private double delayTimer;
         private bool hitWindowActive;
+        private double NoteHit;
         private double actionTime;
+        private double songTime;
         bool drawtest;
         double drawtime;
-        private KeyboardState currentKeyboardState;
-        private KeyboardState previousKeyboardState;
-
         public BinaryBeats()
         {
             hitBoxColor = Color.White;
@@ -50,40 +49,17 @@ namespace GameDevExperience.Screens
         {
             if (IsActive)
             {
-                currentKeyboardState = Keyboard.GetState();
-                double songTime = MediaPlayer.PlayPosition.TotalSeconds;
+                songTime = MediaPlayer.PlayPosition.TotalSeconds;
 
                 // Check for actions in the beatmap
                 foreach (var action in _beatMap.Actions)
                 {
                     actionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat - 1) * _secondsPerBeat;
+                    NoteHit = songTime + _secondsPerBeat * 2;
                     if (Math.Abs(songTime - actionTime) < 0.005)
                     {
                         TriggerAction();
                         break;
-                    }
-                }
-
-                // Handle the hit window logic
-                if (hitWindowActive)
-                {
-                    double timeDifference = songTime - actionTime;
-
-                    // Check if input is within the hit window
-                    if (currentKeyboardState.IsKeyDown(Keys.A) || currentKeyboardState.IsKeyDown(Keys.B))
-                    {
-                        if (Math.Abs(timeDifference) <= _secondsPerBeat / 3)
-                            hitBoxColor = Color.Green;
-                        else if (Math.Abs(timeDifference) <= _secondsPerBeat / 2)
-                            hitBoxColor = Color.Yellow;
-                        else if (Math.Abs(timeDifference) <= _secondsPerBeat)
-                            hitBoxColor = Color.Orange;
-                        else
-                            hitBoxColor = Color.Red;
-                    }
-                    else
-                    {
-                        hitBoxColor = Color.White;
                     }
                 }
 
@@ -96,7 +72,16 @@ namespace GameDevExperience.Screens
                     }
                 }
                 if (drawtest)
+                {
+                    drawtime -= gameTime.ElapsedGameTime.TotalSeconds;
+                    if (drawtime <= 0)
+                    {
+                        drawtest = false;
+                        hitWindowActive = true;
+                        delayTimer = _secondsPerBeat * 2;
+                    }
                 }
+
 
                 if (MediaPlayer.State != MediaState.Playing)
                 {
@@ -112,41 +97,24 @@ namespace GameDevExperience.Screens
                 ScreenManager.AddScreen(new MainMenu());
                 ScreenManager.RemoveScreen(this);
             }
-
-            if (input.A)
+            
+            if (input.A || input.B)
             {
-                if (drawTest)
-                {
-                    test2Color = Color.Green;
-                }
+                if (Math.Abs(NoteHit) <= _secondsPerBeat / 3)
+                    hitBoxColor = Color.Green;
+                else if (Math.Abs(NoteHit) <= _secondsPerBeat / 2)
+                    hitBoxColor = Color.Yellow;
+                else if (Math.Abs(NoteHit) <= _secondsPerBeat)
+                    hitBoxColor = Color.Orange;
                 else
-                {
-                    test2Color = Color.Red;
-                }
+                    hitBoxColor = Color.Red;
             }
-
-            if (input.B)
+            else
             {
-                if (drawTest)
-                {
-                    drawtime -= gameTime.ElapsedGameTime.TotalSeconds;
-                    if (drawtime <= 0)
-                    {
-                        drawtest = false;
-                    }
-                }
-
-                previousKeyboardState = currentKeyboardState;
+                hitBoxColor = Color.White;
             }
         }
 
-        public override void HandleInput(GameTime gameTime, InputManager input)
-        {
-            if (input.Escape)
-            {
-                test2Color = Color.White;
-            }
-        }
 
         public void TriggerAction()
         {

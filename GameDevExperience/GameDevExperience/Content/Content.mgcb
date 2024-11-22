@@ -19,6 +19,18 @@
 /processorParam:Quality=Best
 /build:a-video-game.mp3
 
+#begin Correct.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Correct.wav
+
+#begin Indicator.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Indicator.wav
+
 #begin PublicPixel.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -49,4 +61,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:test2.png
+
+#begin Wrong.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Wrong.wav
 

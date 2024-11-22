@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameDevExperience.Screens
 {
@@ -25,7 +26,9 @@ namespace GameDevExperience.Screens
         private double songTime;
         bool drawtest;
         double drawtime;
-
+        SoundEffect correct;
+        SoundEffect wrong;
+        SoundEffect indicator;
         double total = 0;
         double score = 0;
         double count = 0;
@@ -53,6 +56,9 @@ namespace GameDevExperience.Screens
             _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText("test.json"));
             _secondsPerBeat = 60.0 / _beatMap.Bpm;
             _song = _content.Load<Song>("a-video-game");
+            correct = _content.Load<SoundEffect>("correct");
+            wrong = _content.Load<SoundEffect>("wrong");
+            indicator = _content.Load<SoundEffect>("indicator");
             hitBoxTexture = _content.Load<Texture2D>("test2");
             MediaPlayer.Play(_song);
             songTime = 0;
@@ -98,6 +104,7 @@ namespace GameDevExperience.Screens
                         drawtest = false;
                         hitWindowActive = true;
                         delayTimer = _secondsPerBeat * 2;
+                        indicator.Play();
                     }
                 }
 
@@ -124,18 +131,21 @@ namespace GameDevExperience.Screens
                 if (timeDelay <= greenZoneSize) 
                 {
                     hitBoxColor = Color.Green;
+                    correct.Play();
                     score += 1;
                 }
                 else if (timeDelay > greenZoneSize && timeDelay <= greenZoneSize + yellowZoneSize)
                 {
                     hitBoxColor = Color.Yellow;
+                    correct.Play();
                     score += .5;
                 }   
                 else
                 {
                     hitBoxColor = Color.Red;
+                    wrong.Play();
                 }
-                hitWindowActive = false;
+                //hitWindowActive = false;
             }
             else
             {
@@ -150,6 +160,7 @@ namespace GameDevExperience.Screens
             hitWindowActive = false;
             drawtest = true;
             drawtime = _secondsPerBeat;
+            indicator.Play();
         }
 
         public override void Draw(GameTime gameTime)

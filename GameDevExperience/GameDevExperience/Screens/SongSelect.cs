@@ -1,18 +1,28 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace GameDevExperience.Screens
 {
-    public class MainMenu : GameScreen
+    public class SongSelect : GameScreen
     {
         private ContentManager _content;
 
         private int width;
         private int height;
 
-        public MainMenu()
-        {
+        List<RhythmGameScreen> PotentialGames;
 
+        int gameIndex = 0;
+
+        public SongSelect()
+        {
+            
         }
 
         public override void Activate()
@@ -21,6 +31,12 @@ namespace GameDevExperience.Screens
 
             if (width <= 0) width = ScreenManager.GraphicsDevice.Viewport.Width;
             if (height <= 0) height = ScreenManager.GraphicsDevice.Viewport.Height;
+
+            PotentialGames = new List<RhythmGameScreen>()
+            {
+                new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode")
+                //new BinaryBeats("", "Song2.json", "")
+            };
 
             base.Activate();
         }
@@ -48,28 +64,42 @@ namespace GameDevExperience.Screens
             }
             if (input.A)
             {
-                ScreenManager.AddScreen(new SongSelect());
+                ScreenManager.AddScreen(PotentialGames[gameIndex]);
                 ScreenManager.RemoveScreen(this);
+            }
+            if (input.Right)
+            {
+                if (gameIndex < PotentialGames.Count - 1) gameIndex++;
+                else gameIndex = 0;
+            }
+            else if (input.Left)
+            {
+                if (gameIndex > 0) gameIndex--;
+                else gameIndex = PotentialGames.Count - 1;
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 0, 0);
+            ScreenManager.GraphicsDevice.Clear(Color.Black);
 
             var spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
 
-            string currentText = "The Game Dev Experience";
+            string currentText = "Select Song";
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
             FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
 
-            currentText = "Press A to begin";
+            currentText = PotentialGames[gameIndex].GameName;
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
-            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, (height - size.Y) / 2), Color.LimeGreen, currentText);
+            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, 125 + size.Y / 2), Color.LimeGreen, currentText);
 
-            currentText = "Exit: ESC or Back";
+            currentText = PotentialGames[gameIndex].DisplaySong;
+            size = FontText.SizeOf(currentText, "PublicPixelMedium");
+            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, 175 + size.Y / 2), Color.LimeGreen, currentText);
+
+            currentText = "Use Arrow Keys to Cycle Songs\nA to Select";
             size = FontText.SizeOf(currentText, "PublicPixel");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(width / 2 - size.X / 2, height - size.Y - 20), Color.LimeGreen, currentText);
 

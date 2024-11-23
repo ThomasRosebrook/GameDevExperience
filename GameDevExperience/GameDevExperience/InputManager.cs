@@ -24,6 +24,10 @@ namespace GameDevExperience
 
         public bool Escape { get; private set; } = false;
 
+        public bool Right { get; private set; } = false;
+
+        public bool Left { get; private set; } = false;
+
         /// <summary>
         /// If the A Button is currently pressed
         /// </summary>
@@ -75,13 +79,20 @@ namespace GameDevExperience
             Escape = currentGamePadState.Buttons.Back == ButtonState.Pressed && previousGamePadState.Buttons.Back == ButtonState.Released
                 || currentKeyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape);
 
+            A = currentGamePadState.Buttons.A == ButtonState.Pressed && previousGamePadState.Buttons.A == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(AButtonKey) && !previousKeyboardState.IsKeyDown(AButtonKey);
 
+            B = currentGamePadState.Buttons.B == ButtonState.Pressed && previousGamePadState.Buttons.B == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(BButtonKey) && !previousKeyboardState.IsKeyDown(BButtonKey);
+
+            /*
             A = currentGamePadState.Buttons.A == ButtonState.Pressed
                 || currentKeyboardState.IsKeyDown(AButtonKey);
 
             B = currentGamePadState.Buttons.B == ButtonState.Pressed
                 || currentKeyboardState.IsKeyDown(BButtonKey);
 
+            
             AButtonJustPressed = currentGamePadState.Buttons.A == ButtonState.Pressed && previousGamePadState.Buttons.A == ButtonState.Released
                 || currentKeyboardState.IsKeyDown(AButtonKey) && !previousKeyboardState.IsKeyDown(AButtonKey);
 
@@ -93,7 +104,13 @@ namespace GameDevExperience
 
             BButtonJustReleased = currentGamePadState.Buttons.B == ButtonState.Released && previousGamePadState.Buttons.B == ButtonState.Pressed
                 || !currentKeyboardState.IsKeyDown(BButtonKey) && previousKeyboardState.IsKeyDown(BButtonKey);
+            */
 
+            Right = currentGamePadState.DPad.Right == ButtonState.Pressed && previousGamePadState.DPad.Right == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(Keys.Right) && !previousKeyboardState.IsKeyDown(Keys.Right);
+
+            Left = currentGamePadState.DPad.Left == ButtonState.Pressed && previousGamePadState.DPad.Left == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(Keys.Left) && !previousKeyboardState.IsKeyDown(Keys.Left);
 
             /*
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;

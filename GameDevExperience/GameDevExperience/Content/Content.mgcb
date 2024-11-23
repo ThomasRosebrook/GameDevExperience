@@ -43,24 +43,26 @@
 /processorParam:TextureFormat=Color
 /build:Programming.png
 
-#begin Programming2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Programming2.png
-
 #begin PublicPixel.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:PublicPixel.spritefont
+
+#begin PublicPixelLarge.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:PublicPixelLarge.spritefont
+
+#begin PublicPixelMedium.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:PublicPixelMedium.spritefont
 
 #begin test.jpg
 /importer:TextureImporter
@@ -85,6 +87,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:test2.png
+
+#begin ThoughtBubble.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ThoughtBubble.png
 
 #begin Wrong.wav
 /importer:WavImporter

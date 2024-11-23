@@ -41,6 +41,8 @@ namespace GameDevExperience
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             FontText.AddFont("PublicPixel", Content.Load<SpriteFont>("PublicPixel"));
+            FontText.AddFont("PublicPixelMedium", Content.Load<SpriteFont>("PublicPixelMedium"));
+            FontText.AddFont("PublicPixelLarge", Content.Load<SpriteFont>("PublicPixelLarge"));
         }
 
         protected override void Update(GameTime gameTime)

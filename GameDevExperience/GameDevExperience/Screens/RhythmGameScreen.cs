@@ -11,29 +11,36 @@ namespace GameDevExperience.Screens
 {
     public class RhythmGameScreen : GameScreen
     {
-        private ContentManager _content;
+        public Song Song { get; protected set; }
 
-        private double _secondsPerBeat;
-        private Texture2D test;
-        private Texture2D hitBoxTexture;
-        private Color hitBoxColor;
+        public string DisplaySong = "A Video Game";
+
+        public string GameName { get; protected set; } = "None";
+
+        protected ContentManager _content;
+        protected double _secondsPerBeat;
+        protected private Texture2D test;
+        protected private Texture2D hitBoxTexture;
+        protected private Color hitBoxColor;
         private double delayTimer;
-        private bool hitWindowActive;
-        private double actionTime;
-        private double songTime;
+        protected bool hitWindowActive;
+        
         bool drawtest;
         double drawtime;
-        SoundEffect correct;
-        SoundEffect wrong;
-        SoundEffect indicator;
-        double total = 0;
-        double score = 0;
-        double count = 0;
+        protected SoundEffect correct;
+        protected SoundEffect wrong;
+        protected SoundEffect indicator;
+        int backgroundFrame = 0;
+        Timer BackgroundTimer;
 
-        protected Song _song;
         protected Texture2D _background;
         protected Beatmap _beatMap;
         protected Color _backgroundColor = Color.CornflowerBlue;
+        protected double actionTime;
+        protected double songTime;
+        protected double total = 0;
+        protected double score = 0;
+        protected double accuracy = 0;
 
         protected int beatDelay = 2;
 
@@ -55,23 +62,32 @@ namespace GameDevExperience.Screens
             test = _content.Load<Texture2D>("test");
             correct = _content.Load<SoundEffect>("correct");
             wrong = _content.Load<SoundEffect>("wrong");
-
             indicator = _content.Load<SoundEffect>("indicator");
             hitBoxTexture = _content.Load<Texture2D>("test2");
-            _background = _content.Load<Texture2D>("Programming");
+
+            ActivateGame();
 
             //MediaPlayer.Play(_song);
+            BackgroundTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
+            BackgroundTimer.TimerAlertEvent += OnBackgroundTimerUpdate;
 
             songTime = 0;
             score = 0;
             //total = _beatMap.Actions.Count;
+            
             base.Activate();
+        }
+
+        protected virtual void ActivateGame ()
+        {
+
         }
 
         public override void Update(GameTime gameTime, bool unfocused, bool covered)
         {
             if (IsActive)
             {
+                BackgroundTimer.Update(gameTime);
                 songTime += gameTime.ElapsedGameTime.TotalSeconds;
                 //songTime = MediaPlayer.PlayPosition.TotalSeconds;
 
@@ -82,7 +98,6 @@ namespace GameDevExperience.Screens
                     if (Math.Abs(songTime - currActionTime) <= 0.005)
                     {
                         actionTime = currActionTime;
-                        count++;
                         TriggerAction();
                         break;
                     }
@@ -108,13 +123,19 @@ namespace GameDevExperience.Screens
                     }
                 }
 
+                UpdateGame(gameTime);
 
                 if (MediaPlayer.State != MediaState.Playing)
                 {
-                    MediaPlayer.Play(_song);
+                    MediaPlayer.Play(Song);
                     songTime = 0;
                 }
             }
+        }
+
+        public virtual void UpdateGame(GameTime gameTime)
+        {
+
         }
 
         public override void HandleInput(GameTime gameTime, InputManager input)
@@ -125,25 +146,26 @@ namespace GameDevExperience.Screens
                 ScreenManager.RemoveScreen(this);
             }
 
-            if (hitWindowActive && (input.A || input.B))
+            if (input.A) OnAPress();
+            if (input.B) OnBPress();
+        }
+
+        protected virtual void OnAPress()
+        {
+            if (hitWindowActive)
             {
                 double timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
                 if (timeDelay <= greenZoneSize)
                 {
-                    hitBoxColor = Color.Green;
-                    correct.Play();
-                    score += 1;
+                    OnSuccessfulHit();
                 }
                 else if (timeDelay > greenZoneSize && timeDelay <= greenZoneSize + yellowZoneSize)
                 {
-                    hitBoxColor = Color.Yellow;
-                    correct.Play();
-                    score += .5;
+                    OnHalfSuccessfulHit();
                 }
                 else
                 {
-                    hitBoxColor = Color.Red;
-                    wrong.Play();
+                    OnFailedHit();
                 }
                 hitWindowActive = false;
             }
@@ -153,6 +175,51 @@ namespace GameDevExperience.Screens
             }
         }
 
+        protected virtual void OnBPress()
+        {
+            if (hitWindowActive)
+            {
+                double timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
+                if (timeDelay <= greenZoneSize)
+                {
+                    OnSuccessfulHit();
+                }
+                else if (timeDelay > greenZoneSize && timeDelay <= greenZoneSize + yellowZoneSize)
+                {
+                    OnHalfSuccessfulHit();
+                }
+                else
+                {
+                    OnFailedHit();
+                }
+                hitWindowActive = false;
+            }
+            else
+            {
+                hitBoxColor = Color.White;
+            }
+        }
+
+        protected virtual void OnSuccessfulHit ()
+        {
+            hitBoxColor = Color.Green;
+            correct.Play();
+            score += 1;
+        }
+
+        protected virtual void OnHalfSuccessfulHit()
+        {
+            hitBoxColor = Color.Yellow;
+            correct.Play();
+            score += .5;
+        }
+
+        protected virtual void OnFailedHit()
+        {
+            hitBoxColor = Color.Red;
+            wrong.Play();
+        }
+
         protected void LoadBeatmap(string path)
         {
             _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText(path));
@@ -160,13 +227,19 @@ namespace GameDevExperience.Screens
         }
 
 
-        public void TriggerAction()
+        protected void TriggerAction()
         {
             delayTimer = _secondsPerBeat * beatDelay;
             hitWindowActive = false;
             drawtest = true;
             drawtime = _secondsPerBeat;
             indicator.Play();
+        }
+
+        private void OnBackgroundTimerUpdate(object obj, EventArgs e)
+        {
+            if (backgroundFrame == 0) backgroundFrame = 1;
+            else backgroundFrame = 0;
         }
 
         public override void Draw(GameTime gameTime)
@@ -176,21 +249,21 @@ namespace GameDevExperience.Screens
             var spriteBatch = ScreenManager.SpriteBatch;
             spriteBatch.Begin();
 
-            spriteBatch.Draw(_background, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(_background, new Vector2(0, 0), new Rectangle(960 * backgroundFrame, 0, 960, 540), Color.White);
 
             if (drawtest)
             {
                 spriteBatch.Draw(test, new Rectangle(960 / 4, 540 / 4, 960 / 4, 540 / 4), Color.White);
             }
             spriteBatch.Draw(hitBoxTexture, new Rectangle(0, 0, 960 / 4, 540 / 4), hitBoxColor);
-
-            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150,300), Color.Yellow, $"Frames: {frame}");
-            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 350), Color.Yellow, $"ActionTime: {actionTime}");
-            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 400), Color.Yellow, $"SongTime: {songTime}");
-
-            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 450), Color.Yellow, $"Accuracy: {total / ((total - count) + score) * 100}%");
+            DrawGame(spriteBatch);
 
             spriteBatch.End();
+        }
+
+        protected virtual void DrawGame(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }

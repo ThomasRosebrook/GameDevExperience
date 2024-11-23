@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Media;
 
 namespace GameDevExperience.Screens
 {
@@ -18,6 +19,7 @@ namespace GameDevExperience.Screens
 
         List<RhythmGameScreen> PotentialGames;
 
+        int prevGameIndex = -1;
         int gameIndex = 0;
 
         public SongSelect()
@@ -34,9 +36,14 @@ namespace GameDevExperience.Screens
 
             PotentialGames = new List<RhythmGameScreen>()
             {
-                new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode")
-                //new BinaryBeats("", "Song2.json", "")
+                new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode"),
+                new BinaryBeats("funny-bgm", "Song2.json", "BGM Videogame Song by Sekuora")
             };
+
+            foreach (RhythmGameScreen screen in PotentialGames)
+            {
+                screen.LoadSong(_content);
+            }
 
             base.Activate();
         }
@@ -52,7 +59,11 @@ namespace GameDevExperience.Screens
 
             if (IsActive)
             {
-
+                if (gameIndex != prevGameIndex)
+                {
+                    prevGameIndex = gameIndex;
+                    MediaPlayer.Play(PotentialGames[gameIndex].Song);
+                }
             }
         }
 
@@ -69,13 +80,29 @@ namespace GameDevExperience.Screens
             }
             if (input.Right)
             {
-                if (gameIndex < PotentialGames.Count - 1) gameIndex++;
-                else gameIndex = 0;
+                if (gameIndex < PotentialGames.Count - 1)
+                {
+                    prevGameIndex = gameIndex;
+                    gameIndex++;
+                }
+                else
+                {
+                    prevGameIndex = gameIndex;
+                    gameIndex = 0;
+                }
             }
             else if (input.Left)
             {
-                if (gameIndex > 0) gameIndex--;
-                else gameIndex = PotentialGames.Count - 1;
+                if (gameIndex > 0)
+                {
+                    prevGameIndex = gameIndex;
+                    gameIndex--;
+                }
+                else
+                {
+                    prevGameIndex = gameIndex;
+                    gameIndex = PotentialGames.Count - 1;
+                }
             }
         }
 

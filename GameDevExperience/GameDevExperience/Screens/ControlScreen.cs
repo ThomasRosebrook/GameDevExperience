@@ -1,22 +1,21 @@
 ﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GameDevExperience.Screens
 {
-    public class MainMenu : GameScreen
+    public class ControlScreen : GameScreen
     {
         private ContentManager _content;
 
         private int width;
         private int height;
 
-        int screenIndex = 0;
-
-        List<MenuOption> options;
-
-        public MainMenu()
+        public ControlScreen()
         {
 
         }
@@ -27,12 +26,6 @@ namespace GameDevExperience.Screens
 
             if (width <= 0) width = ScreenManager.GraphicsDevice.Viewport.Width;
             if (height <= 0) height = ScreenManager.GraphicsDevice.Viewport.Height;
-
-            options = new List<MenuOption>()
-            {
-                new MenuOption("Select Song", new SongSelect()) { IsSelected = true },
-                new MenuOption("Controls", new ControlScreen())
-            };
 
             base.Activate();
         }
@@ -56,26 +49,9 @@ namespace GameDevExperience.Screens
         {
             if (input.Escape)
             {
-                ScreenManager.Game.Exit();
-            }
-            if (input.A)
-            {
-                ScreenManager.AddScreen(options[screenIndex].Screen);
+                ScreenManager.AddScreen(new MainMenu());
                 ScreenManager.RemoveScreen(this);
             }
-            if ((input.Up || input.Left) && screenIndex > 0)
-            {
-                options[screenIndex].IsSelected = false;
-                screenIndex--;
-                options[screenIndex].IsSelected = true;
-            }
-            if ((input.Down || input.Right) && screenIndex < options.Count - 1)
-            {
-                options[screenIndex].IsSelected = false;
-                screenIndex++;
-                options[screenIndex].IsSelected = true;
-            }
-
         }
 
         public override void Draw(GameTime gameTime)
@@ -86,25 +62,15 @@ namespace GameDevExperience.Screens
 
             spriteBatch.Begin();
 
-            string currentText = "The Game Dev Experience";
+            string currentText = "Controls";
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
             FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
 
-            int i = 0;
-            foreach (MenuOption option in options)
-            {
-                size = FontText.SizeOf(option.Name, "PublicPixelMedium");
-                option.Draw(spriteBatch, new Vector2(width / 2 - size.X / 2, height / 2 - (options.Count * (size.Y + 50) / 2) + i * (size.Y + 50)));
-                i++;
-            }
-
-            /*
-            currentText = "Select Song";
+            currentText = "Coming Soon";
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
             FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, (height - size.Y) / 2), Color.LimeGreen, currentText);
-            */
 
-            currentText = "Exit: ESC or Back";
+            currentText = "Press ESC or Back to return";
             size = FontText.SizeOf(currentText, "PublicPixel");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(width / 2 - size.X / 2, height - size.Y - 20), Color.LimeGreen, currentText);
 

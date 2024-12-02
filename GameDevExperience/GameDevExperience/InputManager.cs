@@ -28,6 +28,10 @@ namespace GameDevExperience
 
         public bool Left { get; private set; } = false;
 
+        public bool Up { get; private set; } = false;
+
+        public bool Down { get; private set; } = false;
+
         /// <summary>
         /// If the A Button is currently pressed
         /// </summary>
@@ -111,6 +115,12 @@ namespace GameDevExperience
 
             Left = currentGamePadState.DPad.Left == ButtonState.Pressed && previousGamePadState.DPad.Left == ButtonState.Released
                 || currentKeyboardState.IsKeyDown(Keys.Left) && !previousKeyboardState.IsKeyDown(Keys.Left);
+
+            Up = currentGamePadState.DPad.Up == ButtonState.Pressed && previousGamePadState.DPad.Up == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(Keys.Up) && !previousKeyboardState.IsKeyDown(Keys.Up);
+
+            Down = currentGamePadState.DPad.Down == ButtonState.Pressed && previousGamePadState.DPad.Down == ButtonState.Released
+                || currentKeyboardState.IsKeyDown(Keys.Down) && !previousKeyboardState.IsKeyDown(Keys.Down);
 
             /*
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;

@@ -70,7 +70,7 @@ namespace GameDevExperience.Screens
 
             currentText = $"Accuracy: {accuracy}%";
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
-            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, size.Y / 2), Color.LimeGreen, currentText);
+            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height / 2), Color.LimeGreen, currentText);
 
             spriteBatch.End();
         }

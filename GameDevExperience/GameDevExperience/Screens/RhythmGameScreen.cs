@@ -60,6 +60,9 @@ namespace GameDevExperience.Screens
             drawtime = 0;
         }
 
+        /// <summary>
+        /// DO NOT OVERRIDE THIS METHOD
+        /// </summary>
         public override void Activate()
         {
             if (_content == null) _content = new ContentManager(ScreenManager.Game.Services, "Content");
@@ -83,16 +86,29 @@ namespace GameDevExperience.Screens
             base.Activate();
         }
 
+        /// <summary>
+        /// This is the method to override to load in the song for the minigame
+        /// </summary>
+        /// <param name="content"></param>
         public virtual void LoadSong(ContentManager content)
         {
 
         }
 
+        /// <summary>
+        /// This is the method to override instead of the activate method
+        /// </summary>
         protected virtual void ActivateGame ()
         {
 
         }
 
+        /// <summary>
+        /// DO NOT OVERRIDE THIS METHOD
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="unfocused"></param>
+        /// <param name="covered"></param>
         public override void Update(GameTime gameTime, bool unfocused, bool covered)
         {
             if (IsActive)
@@ -143,16 +159,29 @@ namespace GameDevExperience.Screens
             }
         }
 
+        /// <summary>
+        /// This is the method to override instead of the update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void UpdateGame(GameTime gameTime)
         {
 
         }
 
+        /// <summary>
+        /// DO NOT OVERRIDE, this is the unload method
+        /// </summary>
         public override void Unload()
         {
             _content.Unload();
         }
 
+        /// <summary>
+        /// This is where the input handlig takes place
+        /// DO NOT OVERRIDE
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="input"></param>
         public override void HandleInput(GameTime gameTime, InputManager input)
         {
             if (input.Escape)
@@ -168,16 +197,28 @@ namespace GameDevExperience.Screens
             if (input.B) OnBPress();
         }
 
+        /// <summary>
+        /// Method to be overrided by an inherited minigame
+        /// Runs when the "A" button is pressed
+        /// </summary>
         protected virtual void OnAPress()
         {
 
         }
 
+        /// <summary>
+        /// Method to be overrided by an inherited minigame
+        /// Runs when the "B" button is pressed
+        /// </summary>
         protected virtual void OnBPress()
         {
             
         }
 
+        /// <summary>
+        /// Generic method for successfully timed button presses
+        /// To be overrided by minigame versions
+        /// </summary>
         protected virtual void OnSuccessfulHit ()
         {
             hitBoxColor = Color.Green;
@@ -186,6 +227,10 @@ namespace GameDevExperience.Screens
             count++;
         }
 
+        /// <summary>
+        /// Generic method for almost successfully timed button presses
+        /// To be overrided by minigame versions
+        /// </summary>
         protected virtual void OnHalfSuccessfulHit()
         {
             hitBoxColor = Color.Yellow;
@@ -194,6 +239,10 @@ namespace GameDevExperience.Screens
             count++;
         }
 
+        /// <summary>
+        /// Generic method for unsuccessfully timed button presses
+        /// To be overrided by minigame versions
+        /// </summary>
         protected virtual void OnFailedHit()
         {
             hitBoxColor = Color.Red;
@@ -201,18 +250,31 @@ namespace GameDevExperience.Screens
             count++;
         }
 
+        /// <summary>
+        /// Loads in a beatmap from a specific path
+        /// </summary>
+        /// <param name="path">The path to the beatmap</param>
         protected void LoadBeatmap(string path)
         {
             _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText(path));
             _secondsPerBeat = 60.0 / _beatMap.Bpm;
         }
 
+        /// <summary>
+        /// Method to update the background frame when the background timer hits its defined interval
+        /// </summary>
+        /// <param name="obj">Just ignore</param>
+        /// <param name="e">ignore this, doesn't matter</param>
         private void OnBackgroundTimerUpdate(object obj, EventArgs e)
         {
             if (backgroundFrame == 0) backgroundFrame = 1;
             else backgroundFrame = 0;
         }
 
+        /// <summary>
+        /// This is the method to draw the minigame. DO NOT OVERRIDE THIS, USE THE DrawGame METHOD FOR DRAWING INHERITED MINIGAMES
+        /// </summary>
+        /// <param name="gameTime">Game time</param>
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.GraphicsDevice.Clear(_backgroundColor);
@@ -232,6 +294,10 @@ namespace GameDevExperience.Screens
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Override this method in inherited minigames. This will serve as the draw method for inherited classes. This method is called in the draw method of the RhythmGameScreen class.
+        /// </summary>
+        /// <param name="spriteBatch">the spritebatch from the draw method</param>
         protected virtual void DrawGame(SpriteBatch spriteBatch)
         {
 

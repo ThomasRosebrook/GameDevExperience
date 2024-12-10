@@ -15,10 +15,16 @@ namespace GameDevExperience.Screens
         string beatPath = "test.json";
         Texture2D thoughtBubble;
 
+        Texture2D binaryNumbers;
+
         string response = "";
         int responseIndex = 0;
 
         string currentCodeString = "";
+
+        Color binaryColor = Color.Green;
+
+        int[] binaries = new int[3];
         
 
         public BinaryBeats (string songName, string beatmapPath, string display)
@@ -43,6 +49,10 @@ namespace GameDevExperience.Screens
             _background = _content.Load<Texture2D>("Programming");
             total = _beatMap.Actions.Count;
             thoughtBubble = _content.Load<Texture2D>("ThoughtBubble");
+            binaryNumbers = _content.Load<Texture2D>("BinaryNumbers");
+            binaries[0] = 0;
+            binaries[1] = 0;
+            binaries[2] = 0;
 
             MediaPlayer.Play(Song);
         }
@@ -51,75 +61,25 @@ namespace GameDevExperience.Screens
         {
             if (hitWindowActive)
             {
+                binaryColor = Color.Green;
+                SetBinary(0, binaries[0] + (int)(gameTime.ElapsedGameTime.TotalSeconds * 256));
+                SetBinary(1, binaries[1] - (int)(gameTime.ElapsedGameTime.TotalSeconds * 256));
+                SetBinary(2, binaries[2] + 2);
                 int index = RandomHelper.Next(5);
                 if (timeDelay <= greenZoneSize)
                 {
                     if (responseIndex == 2) return;
                     responseIndex = 2;
-                    switch (index)
-                    {
-                        case 0:
-                            currentCodeString = "if(x == 0)";
-                            break;
-                        case 1:
-                            currentCodeString = "while(x > 0)";
-                            break;
-                        case 2:
-                            currentCodeString = "int x = 0;";
-                            break;
-                        case 3:
-                            currentCodeString = "public void Update()";
-                            break;
-                        case 4:
-                            currentCodeString = "foreach (int n in nums)";
-                            break;
-                    }
                 }
                 else if (timeDelay > greenZoneSize && timeDelay <= greenZoneSize + yellowZoneSize)
                 {
                     if (responseIndex == 1) return;
                     responseIndex = 1;
-                    switch (index)
-                    {
-                        case 0:
-                            currentCodeString = "if(true)";
-                            break;
-                        case 1:
-                            currentCodeString = "while(true)";
-                            break;
-                        case 2:
-                            currentCodeString = "int x = 1000;";
-                            break;
-                        case 3:
-                            currentCodeString = "private void Run()";
-                            break;
-                        case 4:
-                            currentCodeString = "for(int i = 0; i < 1; i++)";
-                            break;
-                    }
                 }
                 else
                 {
                     if (responseIndex == 0) return;
                     responseIndex = 0;
-                    switch (index)
-                    {
-                        case 0:
-                            currentCodeString = "if [";
-                            break;
-                        case 1:
-                            currentCodeString = "lwihe (!true)";
-                            break;
-                        case 2:
-                            currentCodeString = "int x = 0.253;";
-                            break;
-                        case 3:
-                            currentCodeString = "void Run() { return x; }";
-                            break;
-                        case 4:
-                            currentCodeString = "for (0)";
-                            break;
-                    }
                 }
             }
             
@@ -181,11 +141,17 @@ namespace GameDevExperience.Screens
                     response = "Clean Code!";
                     break;
             }
+
+            SetBinary(0, 64);
+            SetBinary(1, 64);
+            SetBinary(2, 64);
+            binaryColor = Color.Green;
         }
 
         protected override void OnHalfSuccessfulHit()
         {
             hitBoxColor = Color.Yellow;
+            binaryColor = Color.Yellow;
             correct.Play();
             score += .5;
             count++;
@@ -208,11 +174,16 @@ namespace GameDevExperience.Screens
                     response = "We'll Fix it Later!";
                     break;
             }
+
+            SetBinary(0, 64);
+            SetBinary(1, 64);
+            SetBinary(2, 0);
         }
 
         protected override void OnFailedHit()
         {
             hitBoxColor = Color.Red;
+            binaryColor = Color.Red;
             wrong.Play();
             count++;
 
@@ -234,6 +205,18 @@ namespace GameDevExperience.Screens
                     response = "Integer Overflow";
                     break;
             }
+
+            SetBinary(0, 0);
+            SetBinary(1, 0);
+            SetBinary(2, 0);
+        }
+
+        private void SetBinary(int bin, int value)
+        {
+            int temp = value;
+            while (temp < 0) temp += 128;
+            if (temp < 128) binaries[bin] = temp;
+            else binaries[bin] = 0;
         }
 
        protected override void DrawGame(SpriteBatch spriteBatch)
@@ -253,8 +236,13 @@ namespace GameDevExperience.Screens
             size = FontText.SizeOf(response, "PublicPixel");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(900 - size.X, 50), hitBoxColor, response);
 
-            size = FontText.SizeOf(currentCodeString, "PublicPixel");
-            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(920 - size.X, 125), Color.Green, currentCodeString);
+            for (int i = 0; i < binaries.Length; i++)
+            {
+                spriteBatch.Draw(binaryNumbers, new Vector2(640 + 100 * (i - 1), 125), new Rectangle(0, binaries[i], 64, 64), binaryColor);
+            }
+
+            //size = FontText.SizeOf(currentCodeString, "PublicPixel");
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(920 - size.X, 125), Color.Green, currentCodeString);
         }
     }
 }

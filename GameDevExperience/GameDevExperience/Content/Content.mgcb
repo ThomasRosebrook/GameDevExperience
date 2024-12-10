@@ -61,6 +61,18 @@
 /processorParam:Quality=Best
 /build:Indicator.wav
 
+#begin Normal_Grad_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Normal_Grad_1.png
+
 #begin Programming.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -129,6 +141,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:ThoughtBubble.png
+
+#begin Timid_Grad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Timid_Grad.png
 
 #begin Wrong.wav
 /importer:WavImporter

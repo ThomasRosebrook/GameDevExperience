@@ -26,6 +26,7 @@ namespace GameDevExperience.Screens
 
         protected ContentManager _content;
         protected double _secondsPerBeat;
+        protected double _beatsPerSecond;
         //protected Texture2D test;
         //protected Texture2D hitBoxTexture;
         protected Color hitBoxColor;
@@ -280,6 +281,7 @@ namespace GameDevExperience.Screens
         {
             _beatMap = JsonSerializer.Deserialize<Beatmap>(File.ReadAllText(path));
             _secondsPerBeat = 60.0 / _beatMap.Bpm;
+            _beatsPerSecond = _beatMap.Bpm / 60;
         }
 
         /// <summary>

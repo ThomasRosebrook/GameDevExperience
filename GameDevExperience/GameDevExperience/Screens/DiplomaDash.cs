@@ -14,6 +14,19 @@ namespace GameDevExperience.Screens
     {
         string beatPath = "test.json";
 
+        Texture2D normalGrad;
+
+        Texture2D timidGrad;
+
+        Timer animationsTimer;
+
+        bool gradMovement = false;
+        Timer movementTimer;
+
+        List<Graduate> Graduates;
+
+        bool firstFrame = true;
+
         public DiplomaDash (string songName, string beatmapPath, string display) : base()
         {
             this.songName = songName;
@@ -29,16 +42,43 @@ namespace GameDevExperience.Screens
 
             LoadSong(_content);
             _background = _content.Load<Texture2D>("BackgroundDeploma");
+            normalGrad = _content.Load<Texture2D>("Normal_Grad_1");
+            timidGrad = _content.Load<Texture2D>("Timid_Grad");
             total = _beatMap.Actions.Count;
+            animationsTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
+            animationsTimer.TimerAlertEvent += OnAnimationTimerUpdate;
+            movementTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat * 2);
+            movementTimer.TimerAlertEvent += OnMovementTimerUpdate;
+
+            Graduates = new List<Graduate>()
+            {
+                new Graduate(normalGrad, false) { Position = new Vector2(0, 270) },
+                new Graduate(timidGrad, true) { Position = new Vector2(64, 270) }
+            };
 
             MediaPlayer.Play(Song);
         }
 
         protected override void UpdateGame(GameTime gameTime)
         {
+            animationsTimer.Update(gameTime);
             if (hitWindowActive)
             {
+                if (firstFrame)
+                {
+                    gradMovement = true;
+                    firstFrame = false;
+                }
+            }
+            else firstFrame = true;
 
+            if (gradMovement)
+            {
+                movementTimer.Update(gameTime);
+                foreach (Graduate grad in Graduates)
+                {
+                    grad.Position.X += (float)(20 * _beatsPerSecond * gameTime.ElapsedGameTime.TotalSeconds);
+                }
             }
             //base.UpdateGame(gameTime);
         }
@@ -81,8 +121,35 @@ namespace GameDevExperience.Screens
             base.OnFailedHit();
         }
 
+        private void OnAnimationTimerUpdate(object obj, EventArgs e)
+        {
+            foreach (Graduate grad in Graduates)
+            {
+                if (grad.IsTimid)
+                {
+                    if (grad.AnimationFrame.Y == 0) grad.AnimationFrame.Y = 1;
+                    else grad.AnimationFrame.Y = 0;
+                }
+                else
+                {
+                    if (grad.AnimationFrame.X == 0) grad.AnimationFrame.X = 1;
+                    else grad.AnimationFrame.X = 0;
+                }
+            }
+        }
+
+        private void OnMovementTimerUpdate(object obj, EventArgs e)
+        {
+            gradMovement = false;
+        }
+
         protected override void DrawGame(SpriteBatch spriteBatch)
         {
+            foreach (Graduate grad in Graduates)
+            {
+                grad.Draw(spriteBatch);
+            }
+
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 500), Color.Yellow, "Press A to hand out diplomas");
 
             string currentText = $"Accuracy: {(accuracy * 100).ToString("F2")}%";

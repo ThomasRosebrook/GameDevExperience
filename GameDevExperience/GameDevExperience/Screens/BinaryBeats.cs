@@ -25,6 +25,8 @@ namespace GameDevExperience.Screens
         Color binaryColor = Color.Green;
 
         int[] binaries = new int[3];
+
+        bool firstFrame = true;
         
 
         public BinaryBeats (string songName, string beatmapPath, string display)
@@ -61,9 +63,14 @@ namespace GameDevExperience.Screens
         {
             if (hitWindowActive)
             {
+                if (firstFrame)
+                {
+                    SetBinary(2, 0);
+                    firstFrame = false;
+                }
                 binaryColor = Color.Green;
-                SetBinary(0, binaries[0] + (int)(gameTime.ElapsedGameTime.TotalSeconds * 256));
-                SetBinary(1, binaries[1] - (int)(gameTime.ElapsedGameTime.TotalSeconds * 256));
+                SetBinary(0, binaries[0] + (int)(gameTime.ElapsedGameTime.TotalSeconds * 512));
+                SetBinary(1, binaries[1] - (int)(gameTime.ElapsedGameTime.TotalSeconds * 512));
                 SetBinary(2, binaries[2] + 2);
                 int index = RandomHelper.Next(5);
                 if (timeDelay <= greenZoneSize)
@@ -146,6 +153,7 @@ namespace GameDevExperience.Screens
             SetBinary(1, 64);
             SetBinary(2, 64);
             binaryColor = Color.Green;
+            firstFrame = true;
         }
 
         protected override void OnHalfSuccessfulHit()
@@ -178,6 +186,7 @@ namespace GameDevExperience.Screens
             SetBinary(0, 64);
             SetBinary(1, 64);
             SetBinary(2, 0);
+            firstFrame = true;
         }
 
         protected override void OnFailedHit()
@@ -209,6 +218,7 @@ namespace GameDevExperience.Screens
             SetBinary(0, 0);
             SetBinary(1, 0);
             SetBinary(2, 0);
+            firstFrame = true;
         }
 
         private void SetBinary(int bin, int value)

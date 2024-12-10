@@ -68,7 +68,7 @@ namespace GameDevExperience.Screens
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
             FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
 
-            currentText = $"Accuracy: {accuracy}%";
+            currentText = $"Accuracy: {(accuracy * 100).ToString("F2")}%";
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
             FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height / 2), Color.LimeGreen, currentText);
 

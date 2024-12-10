@@ -11,7 +11,6 @@ namespace GameDevExperience.Screens
 {
     public class BinaryBeats : RhythmGameScreen
     {
-        string songName = "a-video-game";
         string beatPath = "test.json";
         Texture2D thoughtBubble;
 
@@ -38,17 +37,13 @@ namespace GameDevExperience.Screens
 
         }
 
-        public override void LoadSong(ContentManager content)
-        {
-            Song = content.Load<Song>(songName);
-        }
-
         protected override void ActivateGame()
         {
             LoadBeatmap(beatPath);
             
             LoadSong(_content);
             _background = _content.Load<Texture2D>("Programming");
+            
             total = _beatMap.Actions.Count;
             thoughtBubble = _content.Load<Texture2D>("ThoughtBubble");
             binaryNumbers = _content.Load<Texture2D>("BinaryNumbers");
@@ -59,7 +54,7 @@ namespace GameDevExperience.Screens
             MediaPlayer.Play(Song);
         }
 
-        public override void UpdateGame(GameTime gameTime)
+        protected override void UpdateGame(GameTime gameTime)
         {
             if (hitWindowActive)
             {
@@ -128,7 +123,7 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Green;
             correct.Play();
             score += 1;
-            count++;
+            //count++;
 
             switch (RandomHelper.Next(5))
             {
@@ -162,7 +157,7 @@ namespace GameDevExperience.Screens
             binaryColor = Color.Yellow;
             correct.Play();
             score += .5;
-            count++;
+            //count++;
 
             switch (RandomHelper.Next(5))
             {
@@ -194,7 +189,7 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Red;
             binaryColor = Color.Red;
             wrong.Play();
-            count++;
+            //count++;
 
             switch (RandomHelper.Next(5))
             {
@@ -234,7 +229,7 @@ namespace GameDevExperience.Screens
             //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150,300), Color.Yellow, $"Song Time: {songTime.ToString("F4")}");
             //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150, 350), Color.Yellow, $"Action Time: {actionTime.ToString("F4")}");
             //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150, 400), Color.Yellow, $"HitWindow: {hitWindowActive}");
-            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 500), Color.Yellow, "Press A to write text to the beat");
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, 500), Color.Yellow, "Press A to write binary to the beat");
             //if (debugMessage)FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(150, 450), Color.Yellow, $"DEBUG");
             spriteBatch.Draw(thoughtBubble, new Vector2(0, 0), Color.White);
 

@@ -36,8 +36,9 @@ namespace GameDevExperience.Screens
 
             PotentialGames = new List<RhythmGameScreen>()
             {
-                new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode"),
-                new BinaryBeats("funny-bgm", "Song2.json", "BGM Videogame Song by Sekuora")
+                new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode") { ExitGameOnEnd = true },
+                new BinaryBeats("funny-bgm", "Song2.json", "BGM Videogame Song by Sekuora") { ExitGameOnEnd = true },
+                new DiplomaDash("a-video-game", "test.json", "A Video Game by moodmode") { ExitGameOnEnd = true }
             };
 
             foreach (RhythmGameScreen screen in PotentialGames)

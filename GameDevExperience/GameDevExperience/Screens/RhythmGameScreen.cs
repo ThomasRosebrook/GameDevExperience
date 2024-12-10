@@ -7,6 +7,7 @@ using System.Text.Json;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace GameDevExperience.Screens
 {
@@ -16,7 +17,12 @@ namespace GameDevExperience.Screens
 
         public string DisplaySong = "A Video Game";
 
+        public string TotalScoreDisplay = "";
+
         public string GameName { get; protected set; } = "None";
+
+        public bool IsSongRunning = false;
+        public bool ExitGameOnEnd = false;
 
         protected ContentManager _content;
         protected double _secondsPerBeat;
@@ -40,7 +46,7 @@ namespace GameDevExperience.Screens
         protected double songTime;
         protected double total = 0;
         protected double score = 0;
-        protected double accuracy = 0;
+        public double accuracy = 1;
         protected double count = 0;
 
         protected int beatDelay = 2;
@@ -52,6 +58,8 @@ namespace GameDevExperience.Screens
         protected double timeDelay = 0;
 
         protected bool debugMessage = false;
+
+        protected string songName = "a-video-game";
 
         public RhythmGameScreen()
         {
@@ -82,17 +90,18 @@ namespace GameDevExperience.Screens
             songTime = 0;
             score = 0;
             //total = _beatMap.Actions.Count;
-            
+            IsSongRunning = true;
             base.Activate();
         }
 
         /// <summary>
-        /// This is the method to override to load in the song for the minigame
+        /// This is the method to load in the song for the minigame
+        /// The song name should be set in the game's creation
         /// </summary>
         /// <param name="content"></param>
-        public virtual void LoadSong(ContentManager content)
+        public void LoadSong(ContentManager content)
         {
-
+            Song = content.Load<Song>(songName);
         }
 
         /// <summary>
@@ -111,7 +120,7 @@ namespace GameDevExperience.Screens
         /// <param name="covered"></param>
         public override void Update(GameTime gameTime, bool unfocused, bool covered)
         {
-            if (IsActive)
+            if (IsActive && IsSongRunning)
             {
                 BackgroundTimer.Update(gameTime);
                 songTime += gameTime.ElapsedGameTime.TotalSeconds;
@@ -126,6 +135,8 @@ namespace GameDevExperience.Screens
                         actionTime = currActionTime;
                         hitWindowActive = false;
                         drawtest = true;
+                        if (count > 0) accuracy = score / count;
+                        else accuracy = 1;
                         drawtime = _secondsPerBeat * beatDelay;
                         indicator.Play();
                         break;
@@ -135,7 +146,11 @@ namespace GameDevExperience.Screens
                 if (drawtest)
                 {
                     drawtime -= gameTime.ElapsedGameTime.TotalSeconds;
-                    if (drawtime <= 0.505 && drawtime >= 0.495) hitWindowActive = true;
+                    if (drawtime <= 0.505 && drawtime >= 0.495)
+                    {
+                        hitWindowActive = true;
+                        count++;
+                    }
                     else if (drawtime <= 0)
                     {
                         drawtest = false;
@@ -147,12 +162,17 @@ namespace GameDevExperience.Screens
                 if (hitWindowActive) timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
 
                 UpdateGame(gameTime);
-                accuracy = score / count;
+                
 
                 if (MediaPlayer.State != MediaState.Playing)
                 {
-                    ScreenManager.AddScreen(new EndGameScreen(accuracy));
-                    ScreenManager.RemoveScreen(this);
+                    IsSongRunning = false;
+                    if (ExitGameOnEnd)
+                    {
+                        ScreenManager.AddScreen(new EndGameScreen(accuracy));
+                        ScreenManager.RemoveScreen(this);
+                    }
+                    
                     //MediaPlayer.Play(Song);
                     //songTime = 0;
                 }
@@ -163,7 +183,7 @@ namespace GameDevExperience.Screens
         /// This is the method to override instead of the update method
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void UpdateGame(GameTime gameTime)
+        protected virtual void UpdateGame(GameTime gameTime)
         {
 
         }
@@ -224,7 +244,7 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Green;
             correct.Play();
             score += 1;
-            count++;
+            //count++;
         }
 
         /// <summary>
@@ -236,7 +256,7 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Yellow;
             correct.Play();
             score += .5;
-            count++;
+            //count++;
         }
 
         /// <summary>
@@ -247,7 +267,7 @@ namespace GameDevExperience.Screens
         {
             hitBoxColor = Color.Red;
             wrong.Play();
-            count++;
+            //count++;
         }
 
         /// <summary>
@@ -290,6 +310,10 @@ namespace GameDevExperience.Screens
             }
             //spriteBatch.Draw(hitBoxTexture, new Rectangle(0, 0, 960 / 4, 540 / 4), hitBoxColor);
             DrawGame(spriteBatch);
+
+            Vector2 size = FontText.SizeOf(TotalScoreDisplay, "PublicPixel");
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2((960 - size.X) / 2 - 2, size.Y + 10), Color.Black, TotalScoreDisplay);
+            FontText.DrawString(spriteBatch, "PublicPixel", new Vector2((960 - size.X) / 2, size.Y + 12), Color.White, TotalScoreDisplay);
 
             spriteBatch.End();
         }

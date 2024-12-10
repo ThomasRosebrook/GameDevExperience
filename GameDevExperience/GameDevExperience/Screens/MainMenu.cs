@@ -31,6 +31,7 @@ namespace GameDevExperience.Screens
             options = new List<MenuOption>()
             {
                 new MenuOption("Select Song", new SongSelect()) { IsSelected = true },
+                new MenuOption ("Endless Mode", new RhythmGameManager()),
                 new MenuOption("Controls", new ControlScreen())
             };
 
@@ -60,8 +61,11 @@ namespace GameDevExperience.Screens
             }
             if (input.A)
             {
-                ScreenManager.AddScreen(options[screenIndex].Screen);
-                ScreenManager.RemoveScreen(this);
+                if (options[screenIndex].IsScreenSelection)
+                {
+                    ScreenManager.AddScreen(options[screenIndex].Screen);
+                    ScreenManager.RemoveScreen(this);
+                }
             }
             if ((input.Up || input.Left) && screenIndex > 0)
             {

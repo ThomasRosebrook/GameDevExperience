@@ -20,6 +20,7 @@ namespace GameDevExperience.Screens
             beatPath = beatmapPath;
             DisplaySong = display;
             GameName = "Diploma Dash";
+            numBackroundFrames = 1;
         }
 
         protected override void ActivateGame()
@@ -27,7 +28,7 @@ namespace GameDevExperience.Screens
             LoadBeatmap(beatPath);
 
             LoadSong(_content);
-            _background = _content.Load<Texture2D>("Programming");
+            _background = _content.Load<Texture2D>("BackgroundDeploma");
             total = _beatMap.Actions.Count;
 
             MediaPlayer.Play(Song);

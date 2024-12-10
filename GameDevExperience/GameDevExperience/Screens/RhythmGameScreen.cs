@@ -61,6 +61,8 @@ namespace GameDevExperience.Screens
 
         protected string songName = "a-video-game";
 
+        protected int numBackroundFrames = 1;
+
         public RhythmGameScreen()
         {
             hitBoxColor = Color.White;
@@ -287,7 +289,7 @@ namespace GameDevExperience.Screens
         /// <param name="e">ignore this, doesn't matter</param>
         private void OnBackgroundTimerUpdate(object obj, EventArgs e)
         {
-            if (backgroundFrame == 0) backgroundFrame = 1;
+            if (backgroundFrame < numBackroundFrames - 1) backgroundFrame++;
             else backgroundFrame = 0;
         }
 

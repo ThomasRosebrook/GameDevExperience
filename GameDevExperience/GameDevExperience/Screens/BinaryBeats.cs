@@ -34,7 +34,7 @@ namespace GameDevExperience.Screens
             beatPath = beatmapPath;
             DisplaySong = display;
             GameName = "Binary Beats";
-
+            numBackroundFrames = 2;
         }
 
         protected override void ActivateGame()

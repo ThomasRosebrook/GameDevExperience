@@ -5,4 +5,4 @@
 + More games?
 + Custom controls perhaps - Thomas got this
 + Random song / game selection
-+ Gamemode for playing through multiple / an endless stream of games
++ Gamemode for playing through multiple / an endless stream of games - DONE !!!!!!!

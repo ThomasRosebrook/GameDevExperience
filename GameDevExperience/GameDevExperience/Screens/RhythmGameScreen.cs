@@ -137,7 +137,7 @@ namespace GameDevExperience.Screens
                 Action action = (currAction < _beatMap.Actions.Count) ? _beatMap.Actions[currAction] : _beatMap.Actions[_beatMap.Actions.Count - 1];
 
                 double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat) * _secondsPerBeat;
-                if (Math.Abs(songTime - currActionTime) <= 0.009)
+                if (Math.Abs(songTime - currActionTime) <= 0.018)
                 {
                     actionTime = currActionTime;
                     hitWindowActive = false;

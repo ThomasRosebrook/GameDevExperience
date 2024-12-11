@@ -42,6 +42,7 @@ namespace GameDevExperience.Screens
         protected override void ActivateGame()
         {
             LoadBeatmap(beatPath);
+            beatDelay = 2;
 
             LoadSong(_content);
             _background = _content.Load<Texture2D>("BackgroundDeploma");
@@ -51,7 +52,7 @@ namespace GameDevExperience.Screens
             total = _beatMap.Actions.Count;
             animationsTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
             animationsTimer.TimerAlertEvent += OnAnimationTimerUpdate;
-            movementTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat * 2);
+            movementTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat * beatDelay);
             movementTimer.TimerAlertEvent += OnMovementTimerUpdate;
 
             onDeck = new Graduate(RandomHelper.NextBool()) { Position = new Vector2(0, 270) };

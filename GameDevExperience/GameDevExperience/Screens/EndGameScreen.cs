@@ -19,16 +19,17 @@ namespace GameDevExperience.Screens
 
         double accuracy = 0;
 
-        Texture2D winScreen;
 
+        Texture2D superbScreen;
+        Texture2D winScreen;
         Texture2D loseScreen;
 
-        bool HasWon = false;
+        //bool HasWon = false;
 
         public EndGameScreen(double accuracy)
         {
             this.accuracy = accuracy;
-            HasWon = accuracy >= 0.6;
+            //HasWon = accuracy >= 0.6;
         }
 
         public override void Activate()
@@ -38,6 +39,7 @@ namespace GameDevExperience.Screens
             if (width <= 0) width = ScreenManager.GraphicsDevice.Viewport.Width;
             if (height <= 0) height = ScreenManager.GraphicsDevice.Viewport.Height;
 
+            //superbScreen = _content.Load<Texture2D>("");
             winScreen = _content.Load<Texture2D>("Normal_Programming");
             loseScreen = _content.Load<Texture2D>("Bad_Programming");
 
@@ -74,15 +76,31 @@ namespace GameDevExperience.Screens
 
             spriteBatch.Begin();
 
-            string currentText = (HasWon) ? "IT WORKS!" : "100 ERRORS!";
-            Color textColor = (HasWon) ? Color.LimeGreen : Color.Red;
+            Color textColor = Color.Red;
+            string currentText = "100 ERRORS!";
+            if (accuracy >= 80)
+            {
+                textColor = Color.LightBlue;
+                currentText = "SUPERB CODING!";
+            }
+            else if (accuracy >= 60)
+            {
+                textColor = Color.LimeGreen;
+                currentText = "IT WORKS!";
+            }
+
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
             FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), textColor, currentText);
 
-            if (HasWon) spriteBatch.Draw(winScreen, new Vector2(255, 120), Color.White);
+            if (accuracy >= 80) spriteBatch.Draw(winScreen, new Vector2(255, 120), Color.White);
+            else if (accuracy >= 60) spriteBatch.Draw(winScreen, new Vector2(255, 120), Color.White);
             else spriteBatch.Draw(loseScreen, new Vector2(255, 120), Color.White);
 
             currentText = $"Accuracy: {(accuracy * 100).ToString("F2")}%";
+            size = FontText.SizeOf(currentText, "PublicPixelMedium");
+            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height - size.Y - 20), textColor, currentText);
+
+            currentText = "Press ESC to return to main menu";
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
             FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height - size.Y - 20), textColor, currentText);
 

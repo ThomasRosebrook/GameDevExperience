@@ -5,18 +5,22 @@ namespace GameDevExperience
 {
     public class Graduate
     {
-        public Texture2D Texture { get; private set; }
+        public static Texture2D NormalGradTexture;
 
-        public bool IsTimid { get; private set; } = false;
+        public static Texture2D TimidGradTexture;
 
+        Texture2D Texture;
+
+        public bool IsTimid = false;
 
         public Vector2 Position = new Vector2();
 
         public Vector2 AnimationFrame = new Vector2();
 
-        public Graduate (Texture2D texture, bool isTimid)
+        public Graduate (bool isTimid)
         {
-            Texture = texture;
+            if (isTimid) Texture = TimidGradTexture;
+            else Texture = NormalGradTexture;
             IsTimid = isTimid;
         }
 

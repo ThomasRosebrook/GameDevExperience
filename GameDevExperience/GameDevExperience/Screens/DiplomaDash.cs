@@ -14,10 +14,6 @@ namespace GameDevExperience.Screens
     {
         string beatPath = "test.json";
 
-        Texture2D normalGrad;
-
-        Texture2D timidGrad;
-
         Timer animationsTimer;
 
         bool gradMovement = false;
@@ -42,8 +38,8 @@ namespace GameDevExperience.Screens
 
             LoadSong(_content);
             _background = _content.Load<Texture2D>("BackgroundDeploma");
-            normalGrad = _content.Load<Texture2D>("Normal_Grad_1");
-            timidGrad = _content.Load<Texture2D>("Timid_Grad");
+            Graduate.NormalGradTexture = _content.Load<Texture2D>("Normal_Grad_1");
+            Graduate.TimidGradTexture = _content.Load<Texture2D>("Timid_Grad");
             total = _beatMap.Actions.Count;
             animationsTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
             animationsTimer.TimerAlertEvent += OnAnimationTimerUpdate;
@@ -52,8 +48,11 @@ namespace GameDevExperience.Screens
 
             Graduates = new List<Graduate>()
             {
-                new Graduate(normalGrad, false) { Position = new Vector2(0, 270) },
-                new Graduate(timidGrad, true) { Position = new Vector2(64, 270) }
+                new Graduate(RandomHelper.NextBool()) { Position = new Vector2(0, 270) },
+                new Graduate(RandomHelper.NextBool()) { Position = new Vector2(64, 270) },
+                new Graduate(RandomHelper.NextBool()) { Position = new Vector2(128, 270) },
+                new Graduate(RandomHelper.NextBool()) { Position = new Vector2(192, 225) },
+                new Graduate(RandomHelper.NextBool()) { Position = new Vector2(256, 225) }
             };
 
             MediaPlayer.Play(Song);
@@ -78,6 +77,15 @@ namespace GameDevExperience.Screens
                 foreach (Graduate grad in Graduates)
                 {
                     grad.Position.X += (float)(20 * _beatsPerSecond * gameTime.ElapsedGameTime.TotalSeconds);
+
+                    int xdiff = (grad.IsTimid) ? 27 : 25;
+
+                    if (grad.Position.X + xdiff > 718) grad.Position.Y = 270;
+                    else if (grad.Position.X + xdiff > 696) grad.Position.Y = 258;
+                    else if (grad.Position.X + xdiff > 677) grad.Position.Y = 243;
+                    else if (grad.Position.X + 64 - xdiff > 203) grad.Position.Y = 225;
+                    else if (grad.Position.X + 64 - xdiff > 184) grad.Position.Y = 243;
+                    else if (grad.Position.X + 64 - xdiff > 162) grad.Position.Y = 258;
                 }
             }
             //base.UpdateGame(gameTime);

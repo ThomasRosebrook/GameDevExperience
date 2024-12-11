@@ -15,5 +15,7 @@ namespace GameDevExperience
         public static int Next(int max) => rand.Next(max);
 
         public static int Next(int min, int max) => rand.Next(min, max);
+
+        public static bool NextBool() => rand.Next(2) == 0;
     }
 }

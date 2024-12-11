@@ -15,7 +15,7 @@ namespace GameDevExperience
 
         public Vector2 Position = new Vector2();
 
-        public Vector2 AnimationFrame = new Vector2();
+        public int AnimationFrame = 0;
 
         public Graduate (bool isTimid)
         {
@@ -26,7 +26,8 @@ namespace GameDevExperience
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, new Rectangle((int)AnimationFrame.X * 64, (int)AnimationFrame.Y * 64, 64, 64), Color.White);
+            if (IsTimid) spriteBatch.Draw(Texture, Position, new Rectangle(0, AnimationFrame * 64, 64, 64), Color.White);
+            else spriteBatch.Draw(Texture, Position, new Rectangle(AnimationFrame * 64, 0, 64, 64), Color.White);
         }
 
     }

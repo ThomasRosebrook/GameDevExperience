@@ -19,8 +19,6 @@ namespace GameDevExperience.Screens
         string response = "";
         int responseIndex = 0;
 
-        string currentCodeString = "";
-
         Color binaryColor = Color.Green;
 
         int[] binaries = new int[3];

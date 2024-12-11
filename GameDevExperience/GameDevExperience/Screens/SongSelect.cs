@@ -63,8 +63,10 @@ namespace GameDevExperience.Screens
                 if (gameIndex != prevGameIndex)
                 {
                     prevGameIndex = gameIndex;
-                    MediaPlayer.Play(PotentialGames[gameIndex].Song);
+                    if (gameIndex != PotentialGames.Count) MediaPlayer.Play(PotentialGames[gameIndex].Song);
+                    else MediaPlayer.Stop();
                 }
+                
             }
         }
 
@@ -76,12 +78,20 @@ namespace GameDevExperience.Screens
             }
             if (input.A)
             {
-                ScreenManager.AddScreen(PotentialGames[gameIndex]);
-                ScreenManager.RemoveScreen(this);
+                if (gameIndex == PotentialGames.Count)
+                {
+                    ScreenManager.AddScreen(PotentialGames[RandomHelper.Next(PotentialGames.Count)]);
+                }
+                else
+                {
+                    ScreenManager.AddScreen(PotentialGames[gameIndex]);
+                    ScreenManager.RemoveScreen(this);
+                }
+                
             }
             if (input.Right)
             {
-                if (gameIndex < PotentialGames.Count - 1)
+                if (gameIndex < PotentialGames.Count)
                 {
                     prevGameIndex = gameIndex;
                     gameIndex++;
@@ -102,7 +112,7 @@ namespace GameDevExperience.Screens
                 else
                 {
                     prevGameIndex = gameIndex;
-                    gameIndex = PotentialGames.Count - 1;
+                    gameIndex = PotentialGames.Count;
                 }
             }
         }
@@ -119,11 +129,11 @@ namespace GameDevExperience.Screens
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
             FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
 
-            currentText = PotentialGames[gameIndex].GameName;
+            currentText = (gameIndex == PotentialGames.Count) ? "Random Game" : PotentialGames[gameIndex].GameName;
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
             FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, 125 + size.Y / 2), Color.LimeGreen, currentText);
 
-            currentText = PotentialGames[gameIndex].DisplaySong;
+            currentText = (gameIndex == PotentialGames.Count) ? "Random Song" : PotentialGames[gameIndex].DisplaySong;
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
             FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, 175 + size.Y / 2), Color.LimeGreen, currentText);
 

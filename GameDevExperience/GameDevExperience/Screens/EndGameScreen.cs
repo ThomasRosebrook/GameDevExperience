@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GameDevExperience.Screens
 {
@@ -18,9 +19,16 @@ namespace GameDevExperience.Screens
 
         double accuracy = 0;
 
+        Texture2D winScreen;
+
+        Texture2D loseScreen;
+
+        bool HasWon = false;
+
         public EndGameScreen(double accuracy)
         {
             this.accuracy = accuracy;
+            HasWon = accuracy >= 0.6;
         }
 
         public override void Activate()
@@ -30,7 +38,9 @@ namespace GameDevExperience.Screens
             if (width <= 0) width = ScreenManager.GraphicsDevice.Viewport.Width;
             if (height <= 0) height = ScreenManager.GraphicsDevice.Viewport.Height;
 
-            
+            winScreen = _content.Load<Texture2D>("Normal_Programming");
+            loseScreen = _content.Load<Texture2D>("Bad_Programming");
+
             base.Activate();
         }
 
@@ -58,19 +68,23 @@ namespace GameDevExperience.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(Color.Black);
+            ScreenManager.GraphicsDevice.Clear(Color.Gray);
 
             var spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
 
-            string currentText = "Song Complete!";
+            string currentText = (HasWon) ? "IT WORKS!" : "100 ERRORS!";
+            Color textColor = (HasWon) ? Color.LimeGreen : Color.Red;
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");
-            FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), Color.LimeGreen, currentText);
+            FontText.DrawString(spriteBatch, "PublicPixelLarge", new Vector2(width / 2 - size.X / 2, 20), textColor, currentText);
+
+            if (HasWon) spriteBatch.Draw(winScreen, new Vector2(255, 120), Color.White);
+            else spriteBatch.Draw(loseScreen, new Vector2(255, 120), Color.White);
 
             currentText = $"Accuracy: {(accuracy * 100).ToString("F2")}%";
             size = FontText.SizeOf(currentText, "PublicPixelMedium");
-            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height / 2), Color.LimeGreen, currentText);
+            FontText.DrawString(spriteBatch, "PublicPixelMedium", new Vector2(width / 2 - size.X / 2, height - size.Y - 20), textColor, currentText);
 
             spriteBatch.End();
         }

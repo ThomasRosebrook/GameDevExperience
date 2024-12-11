@@ -12,7 +12,7 @@ namespace GameDevExperience
         public EventHandler<EventArgs> TimerAlertEvent;
 
         public TimerUnit Unit;
-        public float Interval;
+        public float Interval { get; private set; }
         double timer = 0;
 
         public Timer()
@@ -54,6 +54,16 @@ namespace GameDevExperience
                 else if (Unit == TimerUnit.Minutes) timer += gameTime.ElapsedGameTime.TotalMinutes;
                 else if (Unit == TimerUnit.Hours) timer += gameTime.ElapsedGameTime.TotalHours;
             }
+        }
+
+        /// <summary>
+        /// Updates the timer interval and resets the timer
+        /// </summary>
+        /// <param name="interval">The interval to change the timer to</param>
+        public void UpdateIndicator(float interval)
+        {
+            Interval = interval;
+            timer = 0;
         }
     }
     public enum TimerUnit

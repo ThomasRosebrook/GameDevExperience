@@ -24,12 +24,15 @@ namespace GameDevExperience.Screens
         Texture2D winScreen;
         Texture2D loseScreen;
 
+        int GameID = 0;
+
         //bool HasWon = false;
 
-        public EndGameScreen(double accuracy)
+        public EndGameScreen(double accuracy, int gameID)
         {
             this.accuracy = accuracy;
             //HasWon = accuracy >= 0.6;
+            GameID = gameID;
         }
 
         public override void Activate()
@@ -39,9 +42,18 @@ namespace GameDevExperience.Screens
             if (width <= 0) width = ScreenManager.GraphicsDevice.Viewport.Width;
             if (height <= 0) height = ScreenManager.GraphicsDevice.Viewport.Height;
 
-            superbScreen = _content.Load<Texture2D>("Superb_Programming");
-            winScreen = _content.Load<Texture2D>("Normal_Programming");
-            loseScreen = _content.Load<Texture2D>("Bad_Programming");
+            if (GameID == 0)
+            {
+                superbScreen = _content.Load<Texture2D>("Superb_Programming");
+                winScreen = _content.Load<Texture2D>("Normal_Programming");
+                loseScreen = _content.Load<Texture2D>("Bad_Programming");
+            }
+            else if (GameID == 1)
+            {
+                superbScreen = _content.Load<Texture2D>("Superb_Diploma");
+                winScreen = _content.Load<Texture2D>("Normal_Diploma");
+                loseScreen = _content.Load<Texture2D>("Bad_Diploma");
+            }
 
             base.Activate();
         }
@@ -77,16 +89,16 @@ namespace GameDevExperience.Screens
             spriteBatch.Begin();
 
             Color textColor = Color.Red;
-            string currentText = "100 ERRORS!";
+            string currentText = (GameID == 1) ? "FLUNKED!" : "100 ERRORS!";
             if (accuracy >= 0.8)
             {
                 textColor = Color.LightBlue;
-                currentText = "SUPERB CODING!";
+                currentText = (GameID == 1) ? "20 JOB OFFERS!" : "SUPERB CODING!";
             }
             else if (accuracy >= 0.6)
             {
                 textColor = Color.LimeGreen;
-                currentText = "IT WORKS!";
+                currentText = (GameID == 1) ? "YOU GRADUATED!" : "IT WORKS!";
             }
 
             Vector2 size = FontText.SizeOf(currentText, "PublicPixelLarge");

@@ -49,6 +49,9 @@ namespace GameDevExperience.Screens
             binaries[1] = 0;
             binaries[2] = 0;
 
+            greenZoneSize = _secondsPerBeat / 4;
+            yellowZoneSize = _secondsPerBeat / 4;
+
             MediaPlayer.Play(Song);
         }
 

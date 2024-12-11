@@ -38,7 +38,7 @@ namespace GameDevExperience.Screens
             {
                 new BinaryBeats("a-video-game", "test.json", "A Video Game by moodmode") { ExitGameOnEnd = true },
                 new BinaryBeats("funny-bgm", "Song2.json", "BGM Videogame Song by Sekuora") { ExitGameOnEnd = true },
-                new DiplomaDash("a-video-game", "test.json", "A Video Game by moodmode") { ExitGameOnEnd = true }
+                new DiplomaDash("new-pad", "new-pad.json", "New Pad by GINODADA") { ExitGameOnEnd = true }
             };
 
             foreach (RhythmGameScreen screen in PotentialGames)

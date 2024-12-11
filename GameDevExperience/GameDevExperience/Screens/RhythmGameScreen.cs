@@ -64,6 +64,10 @@ namespace GameDevExperience.Screens
 
         protected int numBackroundFrames = 1;
 
+        protected int currAction = 0;
+
+        Timer indicatorTimer;
+
         public RhythmGameScreen()
         {
             hitBoxColor = Color.White;
@@ -78,20 +82,22 @@ namespace GameDevExperience.Screens
         {
             if (_content == null) _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            //test = _content.Load<Texture2D>("test");
             correct = _content.Load<SoundEffect>("correct");
             wrong = _content.Load<SoundEffect>("wrong");
             indicator = _content.Load<SoundEffect>("indicator");
-            //hitBoxTexture = _content.Load<Texture2D>("test2");
 
             ActivateGame();
 
-            //MediaPlayer.Play(_song);
             BackgroundTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
             BackgroundTimer.TimerAlertEvent += OnBackgroundTimerUpdate;
 
+            indicatorTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
+            indicatorTimer.TimerAlertEvent += OnIndicatorTimerUpdate;
+
             songTime = 0;
             score = 0;
+            currAction = 0;
+            count = 0;
             //total = _beatMap.Actions.Count;
             IsSongRunning = true;
             base.Activate();
@@ -128,41 +134,43 @@ namespace GameDevExperience.Screens
                 BackgroundTimer.Update(gameTime);
                 songTime += gameTime.ElapsedGameTime.TotalSeconds;
                 //songTime = MediaPlayer.PlayPosition.TotalSeconds;
+                Action action = (currAction < _beatMap.Actions.Count) ? _beatMap.Actions[currAction] : _beatMap.Actions[_beatMap.Actions.Count - 1];
 
-                // Check for actions in the beatmap
-                foreach (var action in _beatMap.Actions)
+                double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat) * _secondsPerBeat;
+                if (Math.Abs(songTime - currActionTime) <= 0.009)
                 {
-                    double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat) * _secondsPerBeat;
-                    //if (Math.Abs(songTime - currActionTime - _secondsPerBeat) <= 0.005)
-                    //{
-                    //    indicator.Play();
-                    //}
-                    if (Math.Abs(songTime - currActionTime) <= 0.005)
+                    actionTime = currActionTime;
+                    hitWindowActive = false;
+                    drawtest = true;
+                    if (count > 0) accuracy = score / count;
+                    else accuracy = 1;
+                    if (action.ActionId == 2)
                     {
-                        actionTime = currActionTime;
-                        hitWindowActive = false;
-                        drawtest = true;
-                        if (count > 0) accuracy = score / count;
-                        else accuracy = 1;
-                        drawtime = _secondsPerBeat * beatDelay;
-                        indicator.Play();
-                        break;
+                        indicatorTimer.UpdateIndicator((float)_secondsPerBeat / 2);
+                        beatDelay = 1.5;
                     }
+                    else
+                    {
+                        indicatorTimer.UpdateIndicator((float)_secondsPerBeat);
+                        beatDelay = 2;
+                    }
+                    drawtime = _secondsPerBeat * beatDelay;
+                    indicator.Play();
+                    currAction++;
+                    count++;
                 }
-
                 if (drawtest)
                 {
+                    indicatorTimer.Update(gameTime);
                     drawtime -= gameTime.ElapsedGameTime.TotalSeconds;
-                    if (drawtime <= 0.505 && drawtime >= 0.495)
-                    {
-                        hitWindowActive = true;
-                        count++;
-                    }
-                    else if (drawtime <= 0)
+                    if (drawtime <= 0)
                     {
                         drawtest = false;
-                        //hitWindowActive = false;
                         indicator.Play();
+                    }
+                    else if (drawtime <= 0.505)
+                    {
+                        hitWindowActive = true;
                     }
                 }
 
@@ -176,12 +184,11 @@ namespace GameDevExperience.Screens
                     IsSongRunning = false;
                     if (ExitGameOnEnd)
                     {
-                        ScreenManager.AddScreen(new EndGameScreen(accuracy));
+                        int gameID = 0;
+                        if (this is DiplomaDash) gameID = 1;
+                        ScreenManager.AddScreen(new EndGameScreen(accuracy, gameID));
                         ScreenManager.RemoveScreen(this);
                     }
-                    
-                    //MediaPlayer.Play(Song);
-                    //songTime = 0;
                 }
             }
         }
@@ -219,9 +226,17 @@ namespace GameDevExperience.Screens
 
             //hitBoxColor = Color.White;
 
-            
-            if (input.A) OnAPress();
-            if (input.B) OnBPress();
+
+            if (input.A)
+            {
+                OnAPress();
+                drawtest = false;
+            }
+            if (input.B)
+            {
+                OnBPress();
+                drawtest = false;
+            }
         }
 
         /// <summary>
@@ -251,7 +266,6 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Green;
             correct.Play();
             score += 1;
-            //count++;
         }
 
         /// <summary>
@@ -263,7 +277,6 @@ namespace GameDevExperience.Screens
             hitBoxColor = Color.Yellow;
             correct.Play();
             score += .5;
-            //count++;
         }
 
         /// <summary>
@@ -274,7 +287,6 @@ namespace GameDevExperience.Screens
         {
             hitBoxColor = Color.Red;
             wrong.Play();
-            //count++;
         }
 
         /// <summary>
@@ -299,6 +311,11 @@ namespace GameDevExperience.Screens
             else backgroundFrame = 0;
         }
 
+        private void OnIndicatorTimerUpdate(object obj, EventArgs e)
+        {
+            indicator.Play();
+        }
+
         /// <summary>
         /// This is the method to draw the minigame. DO NOT OVERRIDE THIS, USE THE DrawGame METHOD FOR DRAWING INHERITED MINIGAMES
         /// </summary>
@@ -312,17 +329,17 @@ namespace GameDevExperience.Screens
 
             spriteBatch.Draw(_background, new Vector2(0, 0), new Rectangle(960 * backgroundFrame, 0, 960, 540), Color.White);
 
-            if (drawtest)
-            {
-                //spriteBatch.Draw(test, new Rectangle(960 / 4, 540 / 4, 960 / 4, 540 / 4), Color.White);
-            }
-            //spriteBatch.Draw(hitBoxTexture, new Rectangle(0, 0, 960 / 4, 540 / 4), hitBoxColor);
             DrawGame(spriteBatch);
 
             Vector2 size = FontText.SizeOf(TotalScoreDisplay, "PublicPixel");
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2((960 - size.X) / 2 - 2, size.Y + 10), Color.Black, TotalScoreDisplay);
             FontText.DrawString(spriteBatch, "PublicPixel", new Vector2((960 - size.X) / 2, size.Y + 12), Color.White, TotalScoreDisplay);
 
+            //Action action = (currAction < _beatMap.Actions.Count) ? _beatMap.Actions[currAction] : _beatMap.Actions[_beatMap.Actions.Count - 1];
+            //double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat) * _secondsPerBeat;
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, size.Y + 50), Color.White, $"{currAction}, {currActionTime}, {action.ActionId}");
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, size.Y + 20), Color.White, $"{songTime}");
+            //FontText.DrawString(spriteBatch, "PublicPixel", new Vector2(10, size.Y + 80), Color.White, $"{beatDelay}");
             spriteBatch.End();
         }
 

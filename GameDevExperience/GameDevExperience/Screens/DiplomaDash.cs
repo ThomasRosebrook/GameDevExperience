@@ -15,6 +15,7 @@ namespace GameDevExperience.Screens
 
         bool gradMovement = false;
         Timer movementTimer;
+        double timidTimer = 0;
 
         Graduate theGraduatedOne;
         Graduate onDeck;
@@ -49,16 +50,16 @@ namespace GameDevExperience.Screens
             total = _beatMap.Actions.Count;
             animationsTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
             animationsTimer.TimerAlertEvent += OnAnimationTimerUpdate;
-            movementTimer = new Timer(TimerUnit.Seconds, (float)(_secondsPerBeat * beatDelay));
+            movementTimer = new Timer(TimerUnit.Seconds, 1f);
             movementTimer.TimerAlertEvent += OnMovementTimerUpdate;
 
-            onDeck = new Graduate(RandomHelper.NextBool()) { Position = new Vector2(0, 270) };
-            almostGrad = new Graduate(RandomHelper.NextBool()) { Position = new Vector2(64, 270) };
+            onDeck = new Graduate(false) { Position = new Vector2(0, 270) };
+            almostGrad = new Graduate(false) { Position = new Vector2(64, 270) };
             theGraduatedOne = new Graduate(false) { Position = new Vector2(1000, 0) };
             markiplierAnimationFrame = new Vector2(0,1);
             
             //ADJUST DIFFICULTY HERE
-            greenZoneSize = 0.0625;
+            greenZoneSize = 0.11;
 
             MediaPlayer.Play(Song);
         }
@@ -83,8 +84,21 @@ namespace GameDevExperience.Screens
             {
                 movementTimer.Update(gameTime);
 
-                almostGrad.Position.X += (float)(150 * _beatsPerSecond * beatDelay * gameTime.ElapsedGameTime.TotalSeconds);
-                onDeck.Position.X += (float)(16 * _beatsPerSecond * beatDelay * gameTime.ElapsedGameTime.TotalSeconds);
+                if (almostGrad.IsTimid)
+                {
+                    if (timidTimer >= _secondsPerBeat)
+                    {
+                        almostGrad.Position.X += (float)(384 * (2.2 + _secondsPerBeat) * gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                    else timidTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                else
+                {
+                    almostGrad.Position.X += (float)(384 * (1) * gameTime.ElapsedGameTime.TotalSeconds);
+                }
+
+                
+                onDeck.Position.X += (float)(32 * 1.5 * gameTime.ElapsedGameTime.TotalSeconds);
                 int xdiff = (almostGrad.IsTimid) ? 27 : 25;
 
                 if (almostGrad.Position.X + 64 - xdiff > 203) almostGrad.Position.Y = 225;
@@ -100,7 +114,7 @@ namespace GameDevExperience.Screens
             else if (theGraduatedOne.Position.X + xgraddiff > 696) theGraduatedOne.Position.Y = 258;
             else if (theGraduatedOne.Position.X + xgraddiff > 677) theGraduatedOne.Position.Y = 243;
             //base.UpdateGame(gameTime);
-            timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
+            timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * (beatDelay + 0.5));
             if (timeDelay <= greenZoneSize)
             {
                 testColor = Color.LimeGreen;
@@ -126,7 +140,7 @@ namespace GameDevExperience.Screens
         {
             if (hitWindowActive)
             {
-                timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * beatDelay);
+                timeDelay = Math.Abs(songTime - actionTime - _secondsPerBeat * (beatDelay + 0.5));
                 if (timeDelay <= greenZoneSize)
                 {
                     OnSuccessfulHit();
@@ -170,8 +184,10 @@ namespace GameDevExperience.Screens
             gradMovement = false;
             theGraduatedOne = almostGrad;
             almostGrad = onDeck;
-            onDeck = new Graduate(RandomHelper.NextBool()) { Position = new Vector2(0, 270) };
+            if (currAction < _beatMap.Actions.Count - 2) onDeck = new Graduate(_beatMap.Actions[currAction + 1].ActionId == 2) { Position = new Vector2(0, 270) };
+            else onDeck.Position.X = 1000;
             markiplierAnimationFrame.Y = 1;
+            timidTimer = 0;
         }
 
         protected override void DrawGame(SpriteBatch spriteBatch)

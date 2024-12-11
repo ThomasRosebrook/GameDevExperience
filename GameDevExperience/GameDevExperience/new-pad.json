@@ -1,0 +1,285 @@
+{
+  "bpm": 115,
+  "actions": [
+    {
+      "measure": 3,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 4,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 5,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 6,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 7,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 8,
+      "beat": 1,
+      "actionId": 2
+    },
+    {
+      "measure": 9,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 9,
+      "beat": 3,
+      "actionId": 2
+    },
+    {
+      "measure": 10,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 11,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 12,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 13,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 14,
+      "beat": 1,
+      "actionId": 2
+    },
+    {
+      "measure": 15,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 16,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 16,
+      "beat": 2,
+      "actionId": 2
+    },
+    {
+      "measure": 17,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 17,
+      "beat": 3,
+      "actionId": 2
+    },
+    {
+      "measure": 18,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 19,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 20,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 21,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 22,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 22,
+      "beat": 3,
+      "actionId": 1
+    },
+    {
+      "measure": 23,
+      "beat": 3,
+      "actionId": 1
+    },
+    {
+      "measure": 25,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 26,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 26,
+      "beat": 3,
+      "actionId": 1
+    },
+    {
+      "measure": 27,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 29,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 29,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 30,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 31,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 31,
+      "beat": 3,
+      "actionId": 2
+    },
+    {
+      "measure": 32,
+      "beat": 2,
+      "actionId": 2
+    },
+    {
+      "measure": 33,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 34,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 34,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 35,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 36,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 37,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 38,
+      "beat": 0,
+      "actionId": 2
+    },
+    {
+      "measure": 39,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 39,
+      "beat": 3,
+      "actionId": 1
+    },
+    {
+      "measure": 40,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 41,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 42,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 43,
+      "beat": 2,
+      "actionId": 1
+    },
+    {
+      "measure": 44,
+      "beat": 1,
+      "actionId": 2
+    },
+    {
+      "measure": 45,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 45,
+      "beat": 3,
+      "actionId": 2
+    },
+    {
+      "measure": 46,
+      "beat": 1,
+      "actionId": 1
+    },
+    {
+      "measure": 47,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 48,
+      "beat": 0,
+      "actionId": 1
+    },
+    {
+      "measure": 48,
+      "beat": 3,
+      "actionId": 2
+    },
+    {
+      "measure": 49,
+      "beat": 1,
+      "actionId": 1
+    }
+  ]
+}

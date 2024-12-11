@@ -4,9 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameDevExperience.Screens
 {
@@ -52,7 +49,7 @@ namespace GameDevExperience.Screens
             total = _beatMap.Actions.Count;
             animationsTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat);
             animationsTimer.TimerAlertEvent += OnAnimationTimerUpdate;
-            movementTimer = new Timer(TimerUnit.Seconds, (float)_secondsPerBeat * beatDelay);
+            movementTimer = new Timer(TimerUnit.Seconds, (float)(_secondsPerBeat * beatDelay));
             movementTimer.TimerAlertEvent += OnMovementTimerUpdate;
 
             onDeck = new Graduate(RandomHelper.NextBool()) { Position = new Vector2(0, 270) };
@@ -61,13 +58,15 @@ namespace GameDevExperience.Screens
             markiplierAnimationFrame = new Vector2(0,1);
             
             //ADJUST DIFFICULTY HERE
-            greenZoneSize = 0.08;
+            greenZoneSize = 0.0625;
 
             MediaPlayer.Play(Song);
         }
 
         protected override void UpdateGame(GameTime gameTime)
         {
+            //if (almostGrad.IsTimid) beatDelay = 1;
+            //else beatDelay = 2;
             animationsTimer.Update(gameTime);
             if (hitWindowActive)
             {
@@ -83,13 +82,15 @@ namespace GameDevExperience.Screens
             if (gradMovement)
             {
                 movementTimer.Update(gameTime);
-                almostGrad.Position.X += (float)(300 * _beatsPerSecond * gameTime.ElapsedGameTime.TotalSeconds);
-                onDeck.Position.X += (float)(32 * _beatsPerSecond * gameTime.ElapsedGameTime.TotalSeconds);
+
+                almostGrad.Position.X += (float)(150 * _beatsPerSecond * beatDelay * gameTime.ElapsedGameTime.TotalSeconds);
+                onDeck.Position.X += (float)(16 * _beatsPerSecond * beatDelay * gameTime.ElapsedGameTime.TotalSeconds);
                 int xdiff = (almostGrad.IsTimid) ? 27 : 25;
 
                 if (almostGrad.Position.X + 64 - xdiff > 203) almostGrad.Position.Y = 225;
                 else if (almostGrad.Position.X + 64 - xdiff > 184) almostGrad.Position.Y = 243;
                 else if (almostGrad.Position.X + 64 - xdiff > 162) almostGrad.Position.Y = 258;
+
             }
 
             theGraduatedOne.Position.X += (float)(200 * _beatsPerSecond * gameTime.ElapsedGameTime.TotalSeconds);

@@ -31,8 +31,8 @@ namespace GameDevExperience.Screens
             options = new List<MenuOption>()
             {
                 new MenuOption("Select Song", new SongSelect()) { IsSelected = true },
-                new MenuOption ("Endless Mode", new RhythmGameManager()),
-                new MenuOption("Controls", new ControlScreen())
+                new MenuOption ("Endless Mode", new RhythmGameManager())
+                //new MenuOption("Controls", new ControlScreen())
             };
 
             base.Activate();

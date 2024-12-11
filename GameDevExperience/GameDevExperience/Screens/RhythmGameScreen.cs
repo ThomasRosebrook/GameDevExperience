@@ -50,7 +50,7 @@ namespace GameDevExperience.Screens
         public double accuracy = 1;
         protected double count = 0;
 
-        protected int beatDelay = 2;
+        protected double beatDelay = 2;
 
         //Due to mirroring, these values should be half the total amount of time for each zone
         protected double greenZoneSize = 0.125;
@@ -133,6 +133,10 @@ namespace GameDevExperience.Screens
                 foreach (var action in _beatMap.Actions)
                 {
                     double currActionTime = action.Measure * 4 * _secondsPerBeat + (action.Beat) * _secondsPerBeat;
+                    //if (Math.Abs(songTime - currActionTime - _secondsPerBeat) <= 0.005)
+                    //{
+                    //    indicator.Play();
+                    //}
                     if (Math.Abs(songTime - currActionTime) <= 0.005)
                     {
                         actionTime = currActionTime;
